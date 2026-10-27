@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pickleball Double Trouble</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%23E30513%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2716%27 fill=%27%23FFC103%27/%3E%3C/svg%3E">
+<meta name="theme-color" content="#E30513">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+/* Mise en page : bandeau rouge UL, panneau des matchs à gauche (en haut sur cell), semaines empilées ; vue compacte « widget » pour le téléphone */
+:root{
+  --rouge:#E30513; --rouge-fonce:#A6000E; --or:#FFC103; --or-fonce:#C99400;
+  --fond:#F3F1EE; --surface:#FFFFFF; --surface-2:#F7F5F2; --texte:#1E1B19; --texte-2:#5E5853;
+  --ligne:#DDD7D1; --or-pale:#FFF4CC;
+  --dispo:rgba(255,193,3,.5); --dispo-bord:rgba(201,148,0,.65);
+  --indispo:rgba(227,5,19,.5); --indispo-bord:rgba(166,0,14,.55);
+  --sur-rouge:#FFFFFF;
+  --f-titre:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-texte:"Source Sans 3","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --fond:#171413; --surface:#221E1C; --surface-2:#2B2624; --texte:#F2EDE9; --texte-2:#B4ABA4;
+  --ligne:#3A3330; --or-pale:#3B3112; --rouge-fonce:#C2121F;
+  --dispo:rgba(255,193,3,.38); --dispo-bord:rgba(255,193,3,.6);
+  --indispo:rgba(227,5,19,.42); --indispo-bord:rgba(255,90,100,.55);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --fond:#171413; --surface:#221E1C; --surface-2:#2B2624; --texte:#F2EDE9; --texte-2:#B4ABA4;
+  --ligne:#3A3330; --or-pale:#3B3112; --rouge-fonce:#C2121F;
+  --dispo:rgba(255,193,3,.38); --dispo-bord:rgba(255,193,3,.6);
+  --indispo:rgba(227,5,19,.42); --indispo-bord:rgba(255,90,100,.55);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--fond);color:var(--texte);font-family:var(--f-texte);font-size:15px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 90px}
+button,select{font-family:inherit}
+:focus-visible{outline:3px solid var(--or);outline-offset:2px}
+
+header{background:var(--rouge);color:var(--sur-rouge);border-bottom:5px solid var(--or);
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 14px}
+.entete{max-width:1360px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+header h1{margin:0;font-family:var(--f-titre);font-size:1.9rem;letter-spacing:.5px;line-height:1}
+header p{margin:4px 0 0;font-size:.92rem;opacity:.92}
+.sync{font-size:.8rem;background:rgba(0,0,0,.18);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.sync::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--or);margin-right:6px;vertical-align:1px}
+.sync.local::before{background:#fff;opacity:.6}
+
+.page{max-width:1360px;margin:0 auto;padding-top:18px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px;align-items:start}
+.barre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.legende{display:flex;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--texte-2)}
+.legende span{display:inline-flex;align-items:center;gap:6px}
+.pas{width:13px;height:13px;border-radius:4px;display:inline-block;border:1px solid var(--ligne)}
+.bascule{display:inline-flex;background:var(--surface);border:1px solid var(--ligne);border-radius:999px;padding:3px}
+.bascule button{border:none;background:transparent;color:var(--texte-2);font-weight:600;font-size:.85rem;padding:6px 12px;border-radius:999px;cursor:pointer}
+.bascule button[aria-pressed="true"]{background:var(--rouge);color:var(--sur-rouge)}
+.lien{border:none;background:none;color:var(--texte-2);font-size:.82rem;text-decoration:underline;cursor:pointer;padding:6px}
+
+/* Colonne de gauche */
+.colonne-gauche{position:sticky;top:12px;display:flex;flex-direction:column;gap:12px}
+/* Panneau à planifier */
+.aplanifier{background:var(--surface);border:1px solid var(--ligne);border-top:4px solid var(--or);
+  border-radius:0 0 12px 12px;padding:12px;outline:3px dashed transparent;outline-offset:2px}
+.aplanifier.survol{outline-color:var(--rouge)}
+.aplanifier h2{margin:0;font-family:var(--f-titre);font-size:1.15rem;color:var(--rouge);letter-spacing:.3px}
+.aplanifier .petit{font-size:.78rem;color:var(--texte-2);margin:2px 0 10px}
+#listeAPlanifier{display:flex;flex-direction:column;gap:8px}
+.carte-match{background:var(--surface);border:2px solid var(--rouge);box-shadow:0 0 0 2px var(--or) inset;border-radius:10px;
+  padding:7px 10px;cursor:grab;font-size:.8rem;line-height:1.3;user-select:none;-webkit-user-select:none;color:var(--texte-2);text-align:left;width:100%}
+.carte-match b{display:block;color:var(--texte);font-size:.9rem}
+.carte-match.choisi{background:var(--or-pale);transform:scale(1.02)}
+.carte-match{position:relative;padding-right:34px}
+.carte-match .suppr{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte-2);cursor:pointer;font-size:.75rem;padding:0}
+.ajouter{width:100%;margin-bottom:10px;border:2px dashed var(--rouge);border-radius:10px;background:transparent;color:var(--rouge);
+  font-weight:700;font-size:.88rem;padding:8px;cursor:pointer}
+.ajouter:hover{background:var(--or-pale)}
+.dialogue label{display:block;font-size:.82rem;font-weight:700;color:var(--texte-2);margin-bottom:4px}
+.dialogue select{width:100%;font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte);margin-bottom:12px}
+.dialogue .vs{text-align:center;font-family:var(--f-titre);font-size:1.1rem;color:var(--rouge);margin:-4px 0 6px}
+.dialogue .erreur{color:var(--rouge);font-size:.85rem;margin:-4px 0 10px}
+.vide{font-size:.82rem;color:var(--texte-2);text-align:center;padding:6px 0}
+
+/* Vue détaillée */
+.semaine{margin-top:20px}
+.semaine h3{margin:0 0 8px;font-family:var(--f-titre);font-size:1.25rem;color:var(--rouge);letter-spacing:.3px}
+.grille{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.jour{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;overflow:hidden}
+.jour h4{margin:0;padding:8px;font-size:.92rem;text-align:center;background:var(--rouge-fonce);color:var(--sur-rouge);text-transform:capitalize}
+.jour.passe{opacity:.5}
+.plages{padding:10px;display:flex;flex-direction:column;gap:10px}
+.bulle{position:relative;border-radius:16px;padding:12px 10px 10px;text-align:center;cursor:pointer;user-select:none;-webkit-user-select:none;
+  border:2px dashed var(--ligne);background:var(--surface-2);color:var(--texte-2);min-height:82px;
+  outline:3px dashed transparent;outline-offset:2px;transition:transform .1s}
+.bulle .heure{font-family:var(--f-titre);font-size:1.35rem;font-weight:700;color:var(--texte);font-variant-numeric:tabular-nums}
+.bulle .statut{font-size:.82rem}
+.bulle .note{font-size:.8rem;margin-top:4px;font-weight:700;color:var(--texte);word-break:break-word}
+.bulle.dispo{background:var(--dispo);border:2px solid var(--dispo-bord)}
+.bulle.nondispo{background:var(--indispo);border:2px solid var(--indispo-bord)}
+.bulle.dispo .statut,.bulle.nondispo .statut{color:var(--texte)}
+.bulle.match{background:var(--surface);border:3px solid var(--rouge);box-shadow:0 0 0 3px var(--or) inset;cursor:grab}
+.bulle.match .statut{color:var(--rouge);font-weight:700;text-transform:uppercase;letter-spacing:.6px;font-size:.75rem}
+.bulle.survol,.cible .bulle:not(.match){outline-color:var(--rouge)}
+.bulle.choisi{transform:scale(1.03);background:var(--or-pale)}
+.bulle .coin{position:absolute;top:5px;right:6px;border:none;background:var(--surface);color:var(--texte);border-radius:50%;
+  width:28px;height:28px;cursor:pointer;font-size:.8rem;padding:0;opacity:.85}
+.terrain{margin-top:7px;font-size:.8rem;font-weight:700;border:1.5px solid var(--rouge-fonce);border-radius:6px;padding:3px 6px;cursor:pointer;
+  background:var(--or-pale);color:var(--texte);max-width:100%}
+.terrain.choisi{background:var(--rouge-fonce);color:#fff}
+
+/* Vue compacte (widget) */
+.compact .semaine{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:12px;margin-top:12px}
+.compact .semaine h3{font-size:1.05rem;margin-bottom:6px}
+.mini{display:grid;grid-template-columns:52px repeat(5,minmax(0,1fr));gap:6px;align-items:center;font-size:.78rem;color:var(--texte-2)}
+.mini .tete{text-align:center;font-weight:700;color:var(--texte)}
+.mini .tete small{display:block;font-weight:400;color:var(--texte-2)}
+.mini .heure{font-variant-numeric:tabular-nums}
+.case{height:40px;border-radius:9px;border:1.5px dashed var(--ligne);background:var(--surface-2);cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--texte);line-height:1.05;overflow:hidden}
+.case.dispo{background:var(--dispo);border:1.5px solid var(--dispo-bord)}
+.case.nondispo{background:var(--indispo);border:1.5px solid var(--indispo-bord)}
+.case.match{background:var(--surface);border:2px solid var(--rouge);box-shadow:0 0 0 2px var(--or) inset;color:var(--rouge)}
+.case.passe{opacity:.45}
+.case.choisi{outline:3px solid var(--or);outline-offset:1px}
+.cible .case:not(.match){outline:2px dashed var(--rouge);outline-offset:1px}
+.prochain{display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--rouge);border-radius:12px;padding:10px 12px;margin-top:4px}
+.prochain .date{text-align:center;min-width:46px;font-size:.75rem;color:var(--texte-2);text-transform:capitalize}
+.prochain .date b{display:block;font-family:var(--f-titre);font-size:1.8rem;line-height:1;color:var(--texte)}
+.prochain .quoi{flex:1;min-width:0}
+.prochain .quoi b{display:block;font-size:1rem}
+.prochain .quoi span{font-size:.82rem;color:var(--texte-2)}
+.pastille-terrain{background:var(--rouge-fonce);color:#fff;font-size:.78rem;font-weight:700;padding:4px 8px;border-radius:6px;white-space:nowrap}
+.pastille-terrain.vide{background:transparent;color:var(--texte-2);border:1px dashed var(--ligne)}
+
+.bas{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-top:24px}
+.aide{font-size:.84rem;color:var(--texte-2);max-width:540px;margin:0;line-height:1.5}
+.equipes{margin-left:auto;background:var(--surface);border:1px solid var(--ligne);border-top:4px solid var(--rouge);border-radius:0 0 10px 10px;
+  padding:10px 14px;font-size:.78rem;line-height:1.55}
+.equipes h2{margin:0 0 4px;font-family:var(--f-titre);font-size:1rem;color:var(--rouge)}
+.equipes ul{list-style:none;margin:0;padding:0}
+.equipes li{color:var(--texte-2)}
+.equipes b{color:var(--texte)}
+.equipes li.nous{background:var(--or-pale);border-radius:4px;padding:0 4px;margin:0 -4px}
+
+/* Bandeau de placement + dialogue */
+.placement{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--texte);color:var(--fond);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;justify-content:space-between}
+.placement button{border:none;border-radius:999px;padding:8px 14px;font-weight:700;background:var(--or);color:#1E1B19;cursor:pointer}
+.voile{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.dialogue{background:var(--surface);color:var(--texte);border-radius:14px;border-top:5px solid var(--rouge);padding:18px;width:min(420px,100%)}
+.dialogue h2{margin:0 0 6px;font-family:var(--f-titre);font-size:1.3rem}
+.dialogue p{margin:0 0 12px;color:var(--texte-2);font-size:.92rem}
+.dialogue input{width:100%;font:inherit;padding:9px 10px;border-radius:8px;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte);margin-bottom:12px}
+.dialogue .boutons{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.dialogue button{border-radius:999px;padding:8px 16px;font-weight:700;cursor:pointer;border:1px solid var(--ligne);background:var(--surface);color:var(--texte)}
+.dialogue button.ok{background:var(--rouge);border-color:var(--rouge);color:#fff}
+
+.haut-droite{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.verrou{border:1.5px solid rgba(255,255,255,.7);background:transparent;color:var(--sur-rouge);border-radius:999px;
+  padding:5px 12px;font-weight:700;font-size:.82rem;cursor:pointer}
+.verrou:hover{background:rgba(0,0,0,.15)}
+body.lecture .coin,body.lecture .suppr,body.lecture .ajouter{display:none}
+body.lecture .bulle,body.lecture .case,body.lecture .carte-match{cursor:default}
+body.lecture .carte-match{padding-right:10px}
+.message{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:40;
+  background:var(--texte);color:var(--fond);padding:10px 16px;border-radius:10px;font-size:.9rem;max-width:min(92vw,460px);text-align:center}
+@media (max-width:1100px){ .grille{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:800px){
+  .page{grid-template-columns:minmax(0,1fr)}
+  .colonne-gauche{position:static}
+  #listeAPlanifier{flex-direction:row;flex-wrap:wrap}
+  .carte-match{width:auto}
+  .grille{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:480px){ .grille{grid-template-columns:minmax(0,1fr)} .equipes{margin-left:0;width:100%} header h1{font-size:1.6rem} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<header>
+  <div class="entete">
+    <div>
+      <h1>Tournoi de pickleball</h1>
+      <p>Double Trouble · disponibilités et matchs</p>
+    </div>
+    <div class="haut-droite"><span class="sync local" id="sync">Connexion…</span><button class="verrou" id="btnVerrou" type="button">🔒 Modifier</button></div>
+  </div>
+</header>
+
+<div class="page" id="vueTableau">
+  <div class="colonne-gauche">
+    <aside class="aplanifier" id="panneau">
+      <h2>Matchs à planifier</h2>
+      <p class="petit" id="consigne">Glisse un match dans une plage, ou touche-le puis touche une plage.</p>
+      <button class="ajouter" id="btnAjouterMatch" type="button">+ Ajouter un match</button>
+      <div id="listeAPlanifier"></div>
+    </aside>
+  </div>
+
+  <main id="principal">
+    <div class="barre">
+      <div class="legende">
+        <span><i class="pas" style="background:var(--dispo)"></i>Disponibles</span>
+        <span><i class="pas" style="background:var(--indispo)"></i>Pas disponibles</span>
+        <span><i class="pas" style="background:var(--surface);border:2px solid var(--rouge)"></i>Match</span>
+      </div>
+      <div class="bascule" role="group" aria-label="Affichage">
+        <button id="vueCompacte" aria-pressed="false">Compact</button>
+        <button id="vueDetail" aria-pressed="false">Détaillé</button>
+      </div>
+    </div>
+
+    <div id="prochainBloc"></div>
+    <div id="semaines"></div>
+
+    <div class="bas">
+      <div>
+        <p class="aide">Pour modifier, touche 🔒 Modifier en haut et entre le NIP (une seule fois par appareil). Touche une plage pour passer de disponibles à pas disponibles. Pour déplacer un match, touche-le puis
+        touche la nouvelle plage. En vue détaillée, ✎ ajoute une note et ✕ remet un match à planifier.</p>
+      </div>
+      <aside class="equipes">
+        <h2>Équipes</h2>
+        <ul id="listeEquipes"></ul>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<div class="placement" id="bandeau" hidden>
+  <span id="bandeauTexte"></span>
+  <button id="btnAnnulerPlacement">Annuler</button>
+</div>
+
+<div class="message" id="message" role="status" hidden></div>
+
+<div class="voile" id="voile" hidden>
+  <div class="dialogue" role="dialog" aria-modal="true" aria-labelledby="dlgTitre">
+    <h2 id="dlgTitre"></h2>
+    <p id="dlgTexte"></p>
+    <input id="dlgChamp" type="text" hidden>
+    <div class="boutons">
+      <button id="dlgAnnuler">Annuler</button>
+      <button id="dlgOk" class="ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="voile" id="voileMatch" hidden>
+  <div class="dialogue" role="dialog" aria-modal="true" aria-labelledby="ajoutTitre">
+    <h2 id="ajoutTitre">Ajouter un match</h2>
+    <label for="equipeA">Équipe A</label>
+    <select id="equipeA"></select>
+    <div class="vs">vs</div>
+    <label for="equipeB">Équipe B</label>
+    <select id="equipeB"></select>
+    <p class="erreur" id="ajoutErreur" hidden></p>
+    <div class="boutons">
+      <button id="ajoutAnnuler" type="button">Annuler</button>
+      <button id="ajoutOk" class="ok" type="button">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== CONFIGURATION ===================== */
+const NB_SEMAINES = 4, JOURS = 5, NB_TERRAINS = 12;
+const PLAGES = [ { code:"1215", libelle:"12 h 15" }, { code:"1630", libelle:"16 h 30" } ];
+const NOTRE_EQUIPE = "Double Trouble";
+/* Indisponibilités récurrentes : 0 = lundi … 4 = vendredi */
+const INDISPO_RECURRENTES = { 0:["1215","1630"], 1:["1630"], 2:["1630"], 4:["1630"] };
+/* Configuration de départ (utilisée tant que rien n'est sauvegardé) */
+const MATCHS_DEPART = [
+  { id:"fred2",      adversaire:"Fred2",          cle:"2026-11-05|1630", terrain:"" },
+  { id:"arcsmashes", adversaire:"Les ArcSmashes", cle:null, terrain:"" },
+  { id:"aa",         adversaire:"Les AA",         cle:null, terrain:"" },
+  { id:"phoenix",    adversaire:"Les Phoenix",    cle:null, terrain:"" },
+];
+const EQUIPES = [
+  ["Bang-Bang","Louis-Emmanuel Jamet / Steve Vachon"],
+  ["Smash-Bros","David Marceau / Stéphane Dorais"],
+  ["Les Phoenix","Katherine Bédard / Alexandre D’Urzo"],
+  ["Les AA","Ariane Arsenault / Vincent Arsenault"],
+  ["Double Trouble","Marie-Geneviève Latour / Benoît Savard"],
+  ["Fred2","Frédéric Lavigne / Frédérick Gamache"],
+  ["Flying Pickles","Steve Rouillard / Alexandre Dal Pan"],
+  ["Les Giga","Dominique Rhéaume / Pierre-Olivier Roy"],
+  ["Les ArcSmashes","Bernard Lachance / David-Laurance Nadeau"],
+  ["Les Ainés","Martin Guay / Alain Paré"],
+];
+const LIBELLES = { "":"À confirmer", dispo:"Disponibles", nondispo:"Pas disponibles" };
+const CYCLE = ["dispo","nondispo",""];
+const CLE_LOCALE = "pickleball-dt-v4", CLE_VUE = "pickleball-dt-vue";
+const CHEMIN_DOC = "tournoi/double-trouble";
+
+/* ===================== ÉTAT ET STOCKAGE ===================== */
+const depart = () => ({ modifs:{}, matchs: MATCHS_DEPART.map(m => ({...m})) });
+const clone = o => JSON.parse(JSON.stringify(o));
+function lireLocal(){ try{ const d = JSON.parse(localStorage.getItem(CLE_LOCALE)); if(d && d.modifs && Array.isArray(d.matchs)) return d; }catch(e){} return null; }
+function ecrireLocal(){ try{ localStorage.setItem(CLE_LOCALE, JSON.stringify(donnees)); }catch(e){} }
+let donnees = lireLocal() || depart();
+
+const API = "https://script.google.com/macros/s/AKfycbw896x33YN6Wy6lmOTIfhKYAXjU3A0vXsDlg1kHffluWf5oICJYeFC0Mh0yMQembcPt/exec";
+const CLE_NIP = "pickleball-dt-nip";
+let nip = null; try{ nip = localStorage.getItem(CLE_NIP); }catch(e){}
+let modeEdition = !!nip;
+let versionServeur = 0;
+let minuterie = null, envoiEnCours = false, aRenvoyer = false;
+
+function majSync(texte, local){ const s = document.getElementById("sync"); s.textContent = texte; s.classList.toggle("local", !!local); }
+function majVerrou(){
+  document.body.classList.toggle("lecture", !modeEdition);
+  document.getElementById("btnVerrou").textContent = modeEdition ? "🔓 Verrouiller" : "🔒 Modifier";
+}
+let minuterieMessage = null;
+function message(texte){
+  const m = document.getElementById("message");
+  m.textContent = texte; m.hidden = false;
+  clearTimeout(minuterieMessage); minuterieMessage = setTimeout(() => { m.hidden = true; }, 5000);
+}
+
+async function appelApi(corps){
+  const r = await fetch(API, { method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify(corps) });
+  return r.json();
+}
+
+function sauver(){
+  ecrireLocal();
+  if(!modeEdition) return;
+  aRenvoyer = true;
+  clearTimeout(minuterie);
+  minuterie = setTimeout(envoyer, 700);     // regroupe les clics rapides en un seul envoi
+}
+
+async function envoyer(){
+  minuterie = null;
+  if(envoiEnCours || !aRenvoyer || !modeEdition) return;
+  envoiEnCours = true; aRenvoyer = false;
+  majSync("Enregistrement…", true);
+  try{
+    const r = await appelApi({ action:"enregistrer", nip, donnees: clone(donnees), versionBase: versionServeur });
+    if(r.ok){ versionServeur = r.version; majSync("Synchronisé"); }
+    else if(r.erreur === "conflit"){
+      versionServeur = r.version;
+      if(r.donnees){ donnees = clone(r.donnees); ecrireLocal(); rendre(); }
+      aRenvoyer = false;
+      message("Quelqu'un d'autre venait de modifier. Ton dernier changement n'a pas été enregistré : refais-le.");
+      majSync("Synchronisé");
+    }
+    else if(r.erreur === "nip"){ oublierNip(); message("Le NIP n'est plus valide. Entre-le de nouveau pour modifier."); majSync("Lecture seule", true); }
+    else if(r.erreur === "bloque"){ aRenvoyer = true; message("Trop d'essais de NIP ratés. Réessaie dans 10 minutes."); majSync("Bloqué", true); }
+    else { message("Enregistrement refusé (" + (r.erreur || "inconnu") + ")."); majSync("Erreur", true); }
+  }catch(e){
+    aRenvoyer = true;                          // on réessaiera au prochain rafraîchissement
+    majSync("Hors ligne · non enregistré", true);
+  }finally{
+    envoiEnCours = false;
+    if(aRenvoyer && !minuterie && navigator.onLine !== false) minuterie = setTimeout(envoyer, 15000);
+  }
+}
+
+async function rafraichir(){
+  if(minuterie || envoiEnCours || aRenvoyer){ if(aRenvoyer && !minuterie && !envoiEnCours) envoyer(); return; }
+  try{
+    const r = await (await fetch(API)).json();
+    if(!r.ok) throw 0;
+    if(minuterie || envoiEnCours || aRenvoyer) return;          // un changement local est parti entre-temps
+    if(r.version !== versionServeur && r.donnees && Array.isArray(r.donnees.matchs)){
+      versionServeur = r.version; donnees = clone(r.donnees); ecrireLocal(); rendre();
+    }
+    majSync(modeEdition ? "Synchronisé" : "Synchronisé · lecture seule", !modeEdition);
+  }catch(e){ majSync("Hors ligne", true); }
+}
+
+function oublierNip(){ nip = null; modeEdition = false; try{ localStorage.removeItem(CLE_NIP); }catch(e){} annulerSelection(); majVerrou(); rendre(); }
+
+async function deverrouiller(){
+  const saisi = await dialogue({ titre:"Entrer le NIP", texte:"Le NIP permet de modifier le tableau sur cet appareil. Il reste mémorisé ici.", champ:"password", ok:"Déverrouiller" });
+  if(saisi === null || !saisi.trim()) return;
+  try{
+    const r = await appelApi({ action:"verifier", nip: saisi.trim() });
+    if(r.ok){
+      nip = saisi.trim(); modeEdition = true;
+      try{ localStorage.setItem(CLE_NIP, nip); }catch(e){}
+      majVerrou(); rendre(); message("Mode modification activé sur cet appareil.");
+      rafraichir();
+    } else if(r.erreur === "bloque") message("Trop d'essais ratés. Réessaie dans 10 minutes.");
+    else message("NIP incorrect.");
+  }catch(e){ message("Impossible de joindre le serveur. Vérifie ta connexion."); }
+}
+function exigerEdition(){ if(modeEdition) return true; deverrouiller(); return false; }
+
+function brancherSynchro(){
+  document.getElementById("btnVerrou").onclick = () => modeEdition ? oublierNip() : deverrouiller();
+  majVerrou();
+  rafraichir();
+  document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible") rafraichir(); });
+  window.addEventListener("online", rafraichir);
+  setInterval(() => { if(document.visibilityState === "visible") rafraichir(); }, 20000);
+}
+
+/* ===================== DATES ===================== */
+function lundiDe(d){ const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - (x.getDay()+6)%7); return x; }
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const fmtJour  = new Intl.DateTimeFormat("fr-CA",{ weekday:"long", day:"numeric", month:"short" });
+const fmtCourt = new Intl.DateTimeFormat("fr-CA",{ day:"numeric", month:"long" });
+const fmtLettre= new Intl.DateTimeFormat("fr-CA",{ weekday:"short" });
+const aujourdhui = new Date(), isoAuj = iso(aujourdhui), lundiDepart = lundiDe(aujourdhui);
+function dateDeCle(cle){ const [y,m,j] = cle.split("|")[0].split("-").map(Number); return new Date(y,m-1,j); }
+function libellePlage(code){ return (PLAGES.find(p => p.code === code) || {}).libelle || code; }
+
+/* ===================== LOGIQUE ===================== */
+function etatBase(cle, indexJour, code){
+  if(donnees.modifs[cle]) return donnees.modifs[cle];
+  return { etat: (INDISPO_RECURRENTES[indexJour]||[]).includes(code) ? "nondispo" : "dispo", note:"" };
+}
+/* Équipes d'un match (les anciens matchs n'ont que « adversaire » : équipe A = nous) */
+const equipesDe = m => [m.equipeA || NOTRE_EQUIPE, m.equipeB || m.adversaire];
+const nomMatch = m => { const [a,b] = equipesDe(m); return `${a} vs ${b}`; };
+const nomCourt = m => { const [a,b] = equipesDe(m); return a === NOTRE_EQUIPE ? `vs ${b}` : b === NOTRE_EQUIPE ? `vs ${a}` : `${a} vs ${b}`; };
+const matchA = cle => donnees.matchs.find(m => m.cle === cle);
+const matchParId = id => donnees.matchs.find(m => m.id === id);
+
+let selection = null;   // id du match en cours de placement (mode tactile)
+function choisir(id){
+  if(selection !== id && !exigerEdition()) return;
+  selection = (selection === id) ? null : id;
+  const m = selection && matchParId(selection);
+  document.getElementById("bandeau").hidden = !m;
+  document.body.classList.toggle("cible", !!m);
+  if(m) document.getElementById("bandeauTexte").textContent = `Touche une plage pour placer ${nomMatch(m)}.`;
+  rendre();
+}
+function annulerSelection(){ if(selection) choisir(selection); }
+
+async function placer(id, cle, indexJour, code){
+  if(!exigerEdition()) return;
+  const m = matchParId(id);
+  if(!m) return;
+  if(m.cle === cle){ annulerSelection(); return; }
+  const occupe = matchA(cle);
+  if(occupe){ await dialogue({ titre:"Plage déjà prise", texte:`Il y a déjà un match à cette plage (${nomMatch(occupe)}).`, seulOk:true }); return; }
+  if(etatBase(cle, indexJour, code).etat === "nondispo"){
+    const ok = await dialogue({ titre:"Vous êtes indisponibles", texte:`Placer ${nomMatch(m)} à ${libellePlage(code)} quand même ?`, ok:"Placer" });
+    if(!ok) return;
+  }
+  m.cle = cle;
+  selection = null; document.getElementById("bandeau").hidden = true; document.body.classList.remove("cible");
+  sauver(); rendre();
+}
+function deplanifier(id){
+  if(!exigerEdition()) return;
+  const m = matchParId(id);
+  if(!m || m.cle === null) return;
+  m.cle = null; m.terrain = "";
+  selection = null; document.getElementById("bandeau").hidden = true; document.body.classList.remove("cible");
+  sauver(); rendre();
+}
+function cycler(cle, i, code){
+  if(!exigerEdition()) return;
+  const a = etatBase(cle, i, code);
+  donnees.modifs[cle] = { etat: CYCLE[(CYCLE.indexOf(a.etat)+1) % CYCLE.length], note: a.note };
+  sauver(); rendre();
+}
+function toucherPlage(cle, i, code){
+  if(selection) placer(selection, cle, i, code);
+  else cycler(cle, i, code);
+}
+
+/* ===================== DIALOGUE MAISON ===================== */
+function dialogue({ titre, texte, champ, valeur="", ok="OK", seulOk=false }){
+  return new Promise(res => {
+    const v = document.getElementById("voile"), inp = document.getElementById("dlgChamp");
+    document.getElementById("dlgTitre").textContent = titre;
+    document.getElementById("dlgTexte").textContent = texte || "";
+    inp.hidden = !champ; inp.value = valeur;
+    inp.type = champ === "password" ? "password" : "text";
+    inp.inputMode = champ === "password" ? "numeric" : "text";
+    inp.autocomplete = "off";
+    document.getElementById("dlgOk").textContent = ok;
+    document.getElementById("dlgAnnuler").hidden = seulOk;
+    v.hidden = false;
+    (champ ? inp : document.getElementById("dlgOk")).focus();
+    const fin = r => { v.hidden = true; document.getElementById("dlgOk").onclick = document.getElementById("dlgAnnuler").onclick = null; inp.onkeydown = null; res(r); };
+    document.getElementById("dlgOk").onclick = () => fin(champ ? inp.value : true);
+    document.getElementById("dlgAnnuler").onclick = () => fin(champ ? null : false);
+    inp.onkeydown = e => { if(e.key === "Enter") fin(inp.value); if(e.key === "Escape") fin(null); };
+  });
+}
+
+/* ===================== GLISSER-DÉPOSER (souris) ===================== */
+let idGlisse = null;
+function glissable(el, id){
+  el.draggable = true;
+  el.addEventListener("dragstart", e => { if(!modeEdition){ e.preventDefault(); return; } idGlisse = id; e.dataTransfer.effectAllowed = "move"; try{ e.dataTransfer.setData("text/plain", id); }catch(_){} });
+  el.addEventListener("dragend", () => { idGlisse = null; document.querySelectorAll(".survol").forEach(x => x.classList.remove("survol")); });
+}
+function cible(el, surDepot){
+  el.addEventListener("dragover", e => { if(!idGlisse) return; e.preventDefault(); el.classList.add("survol"); });
+  el.addEventListener("dragleave", e => { if(!el.contains(e.relatedTarget)) el.classList.remove("survol"); });
+  el.addEventListener("drop", e => { e.preventDefault(); el.classList.remove("survol"); const id = idGlisse || e.dataTransfer.getData("text/plain"); if(id) surDepot(id); });
+}
+
+/* ===================== RENDU ===================== */
+let vue = "detail";
+try{ vue = localStorage.getItem(CLE_VUE) || (window.innerWidth < 700 ? "compact" : "detail"); }catch(e){ vue = window.innerWidth < 700 ? "compact" : "detail"; }
+
+function rendrePanneau(){
+  const zone = document.getElementById("listeAPlanifier"); zone.innerHTML = "";
+  const liste = donnees.matchs.filter(m => !m.cle);
+  if(!liste.length){ zone.innerHTML = `<div class="vide">Tous les matchs sont planifiés.</div>`; return; }
+  liste.forEach(m => {
+    const [a,b] = equipesDe(m);
+    const c = document.createElement("div");
+    c.tabIndex = 0; c.setAttribute("role","button");
+    c.className = "carte-match" + (selection === m.id ? " choisi" : "");
+    c.innerHTML = `<b></b><span></span><button class="suppr" type="button" aria-label="Supprimer ce match">✕</button>`;
+    c.querySelector("b").textContent = a;
+    c.querySelector("span").textContent = "vs " + b;
+    c.addEventListener("click", () => choisir(m.id));
+    c.addEventListener("keydown", e => { if((e.key === "Enter" || e.key === " ") && e.target === c){ e.preventDefault(); choisir(m.id); } });
+    c.querySelector(".suppr").addEventListener("click", async e => {
+      e.stopPropagation();
+      if(!exigerEdition()) return;
+      const ok = await dialogue({ titre:"Supprimer ce match ?", texte:nomMatch(m), ok:"Supprimer" });
+      if(!ok) return;
+      donnees.matchs = donnees.matchs.filter(x => x.id !== m.id);
+      if(selection === m.id) annulerSelection();
+      sauver(); rendre();
+    });
+    glissable(c, m.id);
+    zone.appendChild(c);
+  });
+}
+
+function rendreProchain(){
+  const bloc = document.getElementById("prochainBloc"); bloc.innerHTML = "";
+  if(vue !== "compact") return;
+  const avenir = donnees.matchs.filter(m => m.cle && m.cle.split("|")[0] >= isoAuj).sort((a,b) => a.cle.localeCompare(b.cle));
+  if(!avenir.length) return;
+  const m = avenir[0], d = dateDeCle(m.cle);
+  bloc.innerHTML = `<div class="prochain">
+    <div class="date">${fmtLettre.format(d)}<b>${d.getDate()}</b>${new Intl.DateTimeFormat("fr-CA",{month:"short"}).format(d)}</div>
+    <div class="quoi"><b></b><span>Prochain match · ${libellePlage(m.cle.split("|")[1])}</span></div>
+    <span class="pastille-terrain${m.terrain ? "" : " vide"}">${m.terrain ? "Terrain #" + m.terrain : "Terrain ?"}</span></div>`;
+  bloc.querySelector(".quoi b").textContent = nomCourt(m);
+}
+
+function selectTerrain(match){
+  const sel = document.createElement("select");
+  sel.className = "terrain" + (match.terrain ? " choisi" : "");
+  sel.setAttribute("aria-label","Terrain");
+  sel.add(new Option("Terrain",""));
+  for(let t=1; t<=NB_TERRAINS; t++) sel.add(new Option(`Terrain #${t}`, String(t)));
+  sel.value = match.terrain || "";
+  sel.disabled = !modeEdition;
+  ["click","mousedown","touchstart"].forEach(ev => sel.addEventListener(ev, e => e.stopPropagation(), { passive:true }));
+  sel.addEventListener("change", () => { match.terrain = sel.value; sauver(); rendre(); });
+  return sel;
+}
+
+function rendre(){
+  document.body.classList.toggle("lecture", !modeEdition);
+  document.getElementById("principal").classList.toggle("compact", vue === "compact");
+  document.getElementById("vueCompacte").setAttribute("aria-pressed", vue === "compact");
+  document.getElementById("vueDetail").setAttribute("aria-pressed", vue !== "compact");
+  rendrePanneau(); rendreProchain();
+  const conteneur = document.getElementById("semaines"); conteneur.innerHTML = "";
+
+  for(let s=0; s<NB_SEMAINES; s++){
+    const lundi = new Date(lundiDepart); lundi.setDate(lundi.getDate() + s*7);
+    const vendredi = new Date(lundi); vendredi.setDate(lundi.getDate() + JOURS - 1);
+    const bloc = document.createElement("section"); bloc.className = "semaine";
+    bloc.innerHTML = `<h3>Semaine du ${fmtCourt.format(lundi)} au ${fmtCourt.format(vendredi)}</h3>`;
+    const jours = [...Array(JOURS)].map((_,i) => { const d = new Date(lundi); d.setDate(lundi.getDate()+i); return d; });
+
+    if(vue === "compact"){
+      const g = document.createElement("div"); g.className = "mini";
+      g.appendChild(document.createElement("div"));
+      jours.forEach(d => { const t = document.createElement("div"); t.className = "tete"; t.innerHTML = `${fmtLettre.format(d).replace(".","")}<small>${d.getDate()}</small>`; g.appendChild(t); });
+      PLAGES.forEach(p => {
+        const h = document.createElement("div"); h.className = "heure"; h.textContent = p.libelle; g.appendChild(h);
+        jours.forEach((d,i) => {
+          const cle = `${iso(d)}|${p.code}`, m = matchA(cle);
+          const c = document.createElement("button"); c.type = "button";
+          if(m){
+            c.className = "case match" + (selection === m.id ? " choisi" : "");
+            c.textContent = m.terrain ? "T" + m.terrain : "Match";
+            c.title = nomMatch(m);
+            c.addEventListener("click", () => selection && selection !== m.id ? placer(selection, cle, i, p.code) : choisir(m.id));
+          } else {
+            const info = etatBase(cle, i, p.code);
+            c.className = "case " + info.etat;
+            c.setAttribute("aria-label", `${fmtJour.format(d)} ${p.libelle} : ${LIBELLES[info.etat]}`);
+            if(info.note) c.textContent = "•";
+            c.addEventListener("click", () => toucherPlage(cle, i, p.code));
+          }
+          if(iso(d) < isoAuj) c.classList.add("passe");
+          cible(c, id => placer(id, cle, i, p.code));
+          g.appendChild(c);
+        });
+      });
+      bloc.appendChild(g);
+    } else {
+      const grille = document.createElement("div"); grille.className = "grille";
+      jours.forEach((d,i) => {
+        const carte = document.createElement("div");
+        carte.className = "jour" + (iso(d) < isoAuj ? " passe" : "");
+        carte.innerHTML = `<h4>${fmtJour.format(d)}</h4><div class="plages"></div>`;
+        const zone = carte.querySelector(".plages");
+        PLAGES.forEach(p => {
+          const cle = `${iso(d)}|${p.code}`, m = matchA(cle);
+          const b = document.createElement("div");
+          b.tabIndex = 0; b.setAttribute("role","button");
+          if(m){
+            b.className = "bulle match" + (selection === m.id ? " choisi" : "");
+            b.innerHTML = `<button class="coin" type="button" aria-label="Remettre à planifier">✕</button>
+              <div class="heure">${p.libelle}</div><div class="statut">Match</div><div class="note"></div>`;
+            b.querySelector(".note").textContent = nomMatch(m);
+            b.appendChild(selectTerrain(m));
+            b.querySelector(".coin").addEventListener("click", e => { e.stopPropagation(); deplanifier(m.id); });
+            b.addEventListener("click", () => selection && selection !== m.id ? placer(selection, cle, i, p.code) : choisir(m.id));
+            glissable(b, m.id);
+          } else {
+            const info = etatBase(cle, i, p.code);
+            b.className = "bulle " + info.etat;
+            b.innerHTML = `<button class="coin" type="button" aria-label="Ajouter une note">✎</button>
+              <div class="heure">${p.libelle}</div><div class="statut">${LIBELLES[info.etat]}</div>${info.note ? `<div class="note"></div>` : ""}`;
+            if(info.note) b.querySelector(".note").textContent = info.note;
+            b.addEventListener("click", () => toucherPlage(cle, i, p.code));
+            b.querySelector(".coin").addEventListener("click", async e => {
+              e.stopPropagation();
+              if(!exigerEdition()) return;
+              const a = etatBase(cle, i, p.code);
+              const note = await dialogue({ titre:"Note", texte:`${fmtJour.format(d)} à ${p.libelle}`, champ:true, valeur:a.note, ok:"Enregistrer" });
+              if(note === null) return;
+              donnees.modifs[cle] = { etat:a.etat, note:note.trim() };
+              sauver(); rendre();
+            });
+          }
+          b.addEventListener("keydown", e => { if((e.key === "Enter" || e.key === " ") && e.target === b){ e.preventDefault(); b.click(); } });
+          cible(b, id => placer(id, cle, i, p.code));
+          zone.appendChild(b);
+        });
+        grille.appendChild(carte);
+      });
+      bloc.appendChild(grille);
+    }
+    conteneur.appendChild(bloc);
+  }
+}
+
+function rendreEquipes(){
+  const ul = document.getElementById("listeEquipes");
+  EQUIPES.forEach(([nom, joueurs]) => {
+    const li = document.createElement("li"); if(nom === NOTRE_EQUIPE) li.className = "nous";
+    li.innerHTML = `<b></b> — <span></span>`;
+    li.querySelector("b").textContent = nom; li.querySelector("span").textContent = joueurs;
+    ul.appendChild(li);
+  });
+}
+
+/* ===================== AJOUT D'UN MATCH ===================== */
+(function(){
+  const selA = document.getElementById("equipeA"), selB = document.getElementById("equipeB");
+  const voile = document.getElementById("voileMatch"), err = document.getElementById("ajoutErreur");
+  [selA, selB].forEach(s => EQUIPES.forEach(([nom]) => s.add(new Option(nom, nom))));
+  const effacer = () => { err.hidden = true; };
+  selA.onchange = selB.onchange = effacer;
+  document.getElementById("btnAjouterMatch").onclick = () => {
+    if(!exigerEdition()) return;
+    selA.value = NOTRE_EQUIPE;
+    selB.value = EQUIPES.find(([n]) => n !== NOTRE_EQUIPE)[0];
+    effacer(); voile.hidden = false; selB.focus();
+  };
+  document.getElementById("ajoutAnnuler").onclick = () => { voile.hidden = true; };
+  document.getElementById("ajoutOk").onclick = () => {
+    const a = selA.value, b = selB.value;
+    if(a === b){ err.textContent = "Choisis deux équipes différentes."; err.hidden = false; return; }
+    donnees.matchs.push({ id:"m" + Date.now().toString(36), equipeA:a, equipeB:b, adversaire:b, cle:null, terrain:"" });
+    voile.hidden = true;
+    sauver(); rendre();
+  };
+  voile.addEventListener("keydown", e => { if(e.key === "Escape") voile.hidden = true; });
+})();
+
+/* ===================== BOUTONS ===================== */
+cible(document.getElementById("panneau"), deplanifier);
+document.getElementById("btnAnnulerPlacement").onclick = annulerSelection;
+function changerVue(v){ vue = v; try{ localStorage.setItem(CLE_VUE, v); }catch(e){} rendre(); }
+document.getElementById("vueCompacte").onclick = () => changerVue("compact");
+document.getElementById("vueDetail").onclick = () => changerVue("detail");
+document.addEventListener("keydown", e => { if(e.key === "Escape" && document.getElementById("voile").hidden) annulerSelection(); });
+
+rendreEquipes();
+rendre();
+brancherSynchro();
+</script>
+</body>
+</html>
