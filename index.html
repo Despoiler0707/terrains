@@ -555,9 +555,10 @@ function texteNoteAuto(n){
   if(!n) return "";
   const manque = (JOUEURS_PAR_TERRAIN - n % JOUEURS_PAR_TERRAIN) % JOUEURS_PAR_TERRAIN;
   if(!manque) return "C'est complet !";
+  const qui = n === 1 ? "Je suis" : "Nous sommes";   // « Je » seulement quand je suis seul
   return manque === 1
-    ? "Nous sommes à la recherche d'un joueur.\nQuelqu'un de disponible pour se joindre à nous???"
-    : `Nous sommes à la recherche de ${manque} joueurs.\nDes joueurs disponibles pour se joindre à nous???`;
+    ? `${qui} à la recherche d'un joueur.\nQuelqu'un de disponible pour se joindre à nous???`
+    : `${qui} à la recherche de ${manque} joueurs.\nDes joueurs disponibles pour se joindre à nous???`;
 }
 function majNoteAuto(){
   if(noteAuto) $("resaNote").value = texteNoteAuto(joueursChoisis.length);
