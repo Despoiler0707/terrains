@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pickleball Double Trouble</title>
+<title>Réservation de terrain</title>
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
@@ -18,7 +18,7 @@ html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
-/* Mise en page : bandeau rouge UL, panneau des matchs à gauche (en haut sur cell), semaines empilées ; vue compacte « widget » pour le téléphone */
+/* Mise en page : bandeau rouge UL, formulaire de réservation à gauche, cartes à droite (empilés sur cell) */
 :root{
   --rouge:#E30513; --rouge-fonce:#A6000E; --or:#FFC103; --or-fonce:#C99400;
   --fond:#F3F1EE; --surface:#FFFFFF; --surface-2:#F7F5F2; --texte:#1E1B19; --texte-2:#5E5853;
@@ -69,8 +69,14 @@ header p{margin:4px 0 0;font-size:.92rem;opacity:.92}
 .bascule button[aria-pressed="true"]{background:var(--rouge);color:var(--sur-rouge)}
 .lien{border:none;background:none;color:var(--texte-2);font-size:.82rem;text-decoration:underline;cursor:pointer;padding:6px}
 
-/* Colonne de gauche */
+/* Colonne de gauche : panneau à planifier + bouton réservation */
 .colonne-gauche{position:sticky;top:12px;display:flex;flex-direction:column;gap:12px}
+.btn-resa{display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;
+  background:var(--surface);color:var(--texte);border:1px solid var(--ligne);border-left:5px solid var(--rouge);border-radius:0 12px 12px 0;
+  padding:10px 12px;font-size:.9rem;font-weight:700;font-family:inherit}
+.btn-resa:hover{background:var(--or-pale)}
+.btn-resa small{display:block;font-weight:400;font-size:.76rem;color:var(--texte-2)}
+.btn-resa .ico{font-size:1.3rem}
 /* Panneau à planifier */
 .aplanifier{background:var(--surface);border:1px solid var(--ligne);border-top:4px solid var(--or);
   border-radius:0 0 12px 12px;padding:12px;outline:3px dashed transparent;outline-offset:2px}
@@ -178,15 +184,104 @@ body.lecture .bulle,body.lecture .case,body.lecture .carte-match{cursor:default}
 body.lecture .carte-match{padding-right:10px}
 .message{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:40;
   background:var(--texte);color:var(--fond);padding:10px 16px;border-radius:10px;font-size:.9rem;max-width:min(92vw,460px);text-align:center}
+/* Vue Réservation de terrain */
+.resa{max-width:1100px;margin:0 auto;padding-top:16px}
+.resa-tete{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.resa-tete h2{margin:0;font-family:var(--f-titre);font-size:1.7rem;color:var(--rouge);letter-spacing:.3px}
+.retour{border:1.5px solid var(--rouge);background:var(--surface);color:var(--rouge);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.9rem;cursor:pointer}
+.retour:hover{background:var(--or-pale)}
+.resa-grille{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;margin-top:14px;align-items:start}
+.carte{background:var(--surface);border:1px solid var(--ligne);border-top:4px solid var(--rouge);border-radius:0 0 12px 12px;padding:16px}
+.carte h3{margin:0 0 12px;font-family:var(--f-titre);font-size:1.25rem;color:var(--rouge);letter-spacing:.3px}
+.champs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.champ{display:flex;flex-direction:column;gap:4px;min-width:0}
+.champ.large{grid-column:1 / -1}
+.champ label{font-size:.8rem;font-weight:700;color:var(--texte-2)}
+.champ input,.champ select,.champ textarea{width:100%;font:inherit;font-size:16px;padding:9px 10px;border-radius:8px;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte)}
+.champ textarea{resize:vertical;min-height:44px}
+.puces{display:flex;gap:6px;flex-wrap:wrap}
+.puces button{border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte);border-radius:999px;padding:5px 10px;font-size:.82rem;font-weight:700;cursor:pointer}
+.puces button:hover{border-color:var(--rouge)}
+.puces.jours{flex-wrap:nowrap}
+.puces.jours button{white-space:nowrap}
+.puces.jours .court{display:none}
+@media (max-width:440px){
+  .puces.jours{gap:4px}
+  .puces.jours button{flex:1 1 auto;padding:5px 6px}
+  .puces.jours .long{display:none}
+  .puces.jours .court{display:inline}
+}
+.lien-auto{align-self:flex-start;border:none;background:none;color:var(--rouge);font-size:.8rem;font-weight:700;text-decoration:underline;cursor:pointer;padding:2px 0}
+.ligne-fin{display:flex;flex-direction:column;gap:4px}
+.ligne-fin input{width:100%}
+.puces button[aria-pressed="true"]{border-color:var(--rouge);background:var(--rouge);color:#fff}
+.joueurs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.choix-joueurs{display:flex;flex-wrap:wrap;gap:8px}
+.choix-joueurs button{border:2px solid var(--ligne);background:var(--surface-2);color:var(--texte);border-radius:999px;
+  padding:9px 16px;font-size:1rem;font-weight:700;cursor:pointer;min-width:72px}
+.choix-joueurs button[aria-pressed="true"]{background:var(--rouge);border-color:var(--rouge);color:#fff}
+.autre-joueur{display:flex;gap:8px;margin-top:8px}
+.autre-joueur input{flex:1;min-width:0;font:inherit;font-size:16px;padding:8px 10px;border-radius:8px;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte)}
+.autre-joueur button{border:1.5px solid var(--rouge);background:var(--surface);color:var(--rouge);border-radius:999px;padding:6px 14px;font-weight:700;cursor:pointer}
+.retirer-membres{margin-top:8px;align-self:flex-start;border:1.5px dashed var(--rouge);background:transparent;color:var(--rouge);
+  border-radius:999px;padding:6px 14px;font-weight:700;font-size:.85rem;cursor:pointer}
+.terrains-resa{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.terrains-resa .t{display:flex;flex-direction:column;gap:3px}
+.terrains-resa .t span{font-size:.75rem;color:var(--texte-2);font-weight:700}
+.terrains-resa select{width:100%;font:inherit;font-size:16px;padding:9px 10px;border-radius:8px;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte)}
+.apercu{margin-top:14px;background:var(--surface-2);border:1px dashed var(--ligne);border-radius:10px;padding:12px;white-space:pre-wrap;font-size:.92rem;line-height:1.45;word-break:break-word}
+.apercu-titre{margin:14px 0 0;font-size:.8rem;font-weight:700;color:var(--texte-2)}
+.actions-resa{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.actions-resa button{border-radius:999px;padding:10px 16px;font-weight:700;font-size:.92rem;cursor:pointer;border:1.5px solid var(--rouge);background:var(--surface);color:var(--rouge)}
+.actions-resa button.principal{background:var(--rouge);color:#fff}
+.erreur-resa{color:var(--rouge);font-size:.85rem;font-weight:700;margin:10px 0 0}
+.liste-resa{display:flex;flex-direction:column;gap:10px}
+/* Carte de réservation : même rendu que l'image copiée (échelle : largeur de l'image = 900 px) */
+.item-resa{container-type:inline-size;background:#FFFFFF;color:#1E1B19;border-bottom:max(4px,.89cqw) solid #FFC103;
+  box-shadow:0 1px 4px rgba(0,0,0,.18);overflow:hidden}
+.cm-bandeau{background:#E30513;color:#fff;border-bottom:max(5px,1.11cqw) solid #FFC103;display:flex;align-items:center;justify-content:space-between;
+  padding:max(10px,2.6cqw) max(14px,5.33cqw)}
+.cm-titre{font-family:var(--f-titre);font-weight:700;font-size:max(1.4rem,6.44cqw);line-height:1}
+.cm-icone svg{display:block;width:max(42px,11.5cqw);height:auto;margin:-1.5cqw 0}
+.cm-corps{padding:max(12px,3.6cqw) max(14px,5.33cqw) max(14px,4cqw)}
+.cm-date{font-family:var(--f-titre);font-weight:700;font-size:max(1.3rem,5.56cqw);line-height:1.05}
+.cm-heure{font-family:var(--f-titre);font-weight:600;font-size:max(1.15rem,4.67cqw);line-height:1.15;color:#A6000E}
+.cm-lieu{display:inline-flex;align-items:center;gap:max(7px,1.6cqw);margin-top:max(10px,2.6cqw);background:#F7F5F2;border-radius:999px;
+  padding:max(5px,1.1cqw) max(12px,3.1cqw) max(5px,1.1cqw) max(10px,2.4cqw);font-weight:700;font-size:max(.92rem,3.33cqw);max-width:100%}
+.cm-lieu i{flex:none;width:max(8px,1.56cqw);aspect-ratio:1;border-radius:50%;background:#E30513}
+.cm-label{margin-top:max(12px,3.3cqw);font-weight:700;font-size:max(.72rem,2.44cqw);color:#5E5853;letter-spacing:.3px}
+.cm-joueurs{display:flex;flex-wrap:wrap;gap:max(6px,1.33cqw);margin-top:max(6px,1.3cqw)}
+.cm-joueurs span{background:#FFF4CC;border:max(1.5px,.22cqw) solid #C99400;border-radius:999px;font-weight:600;font-size:max(.92rem,3.33cqw);
+  padding:max(3px,.9cqw) max(11px,2.44cqw)}
+.cm-note{white-space:pre-line;margin-top:max(12px,3.3cqw);background:#F7F5F2;border-left:max(4px,.67cqw) solid #E30513;border-radius:0 8px 8px 0;
+  padding:max(8px,2cqw) max(12px,2.7cqw);font-style:italic;font-size:max(.88rem,3.11cqw);color:#5E5853;line-height:1.35}
+.cm-vide{color:#9A938D}
+.apercu-cadre{border:2px dashed var(--rouge);border-radius:12px;padding:8px;margin-bottom:14px}
+.etiquette-apercu{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--rouge);margin:0 2px 6px}
+.item-resa.cliquable{cursor:pointer;transition:box-shadow .15s, transform .1s}
+.item-resa.cliquable:hover{box-shadow:0 0 0 3px var(--or)}
+.item-resa.cliquable:active{transform:scale(.99)}
+.indice-copie{font-size:.8rem;color:var(--texte-2);margin:-6px 0 10px}
+.ligne-resa{display:flex;align-items:center;gap:10px}
+.ligne-resa .item-resa{flex:1;min-width:0}
+.suppr-resa{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid var(--ligne);background:var(--surface);
+  color:var(--rouge);border-radius:12px;padding:8px 10px;font-weight:700;font-size:.78rem;cursor:pointer}
+.suppr-resa:hover{border-color:var(--rouge)}
+.suppr-resa span[aria-hidden]{font-size:1.2rem;line-height:1}
+@media (max-width:440px){ .suppr-resa .txt{display:none} .suppr-resa{padding:8px} }
+.item-resa .actions-resa{margin-top:8px}
+.item-resa .actions-resa button{padding:6px 12px;font-size:.82rem}
+body.lecture .seul-edition{display:none}
 @media (max-width:1100px){ .grille{grid-template-columns:repeat(3,minmax(0,1fr))} }
 @media (max-width:800px){
   .page{grid-template-columns:minmax(0,1fr)}
   .colonne-gauche{position:static}
+  .resa-grille{grid-template-columns:minmax(0,1fr)}
   #listeAPlanifier{flex-direction:row;flex-wrap:wrap}
   .carte-match{width:auto}
   .grille{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:480px){ .grille{grid-template-columns:minmax(0,1fr)} .equipes{margin-left:0;width:100%} header h1{font-size:1.6rem} }
+@media (max-width:480px){ .champs,.joueurs{grid-template-columns:minmax(0,1fr)} .grille{grid-template-columns:minmax(0,1fr)} .equipes{margin-left:0;width:100%} header h1{font-size:1.6rem} }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
 </style>
 </head>
@@ -194,55 +289,71 @@ body.lecture .carte-match{padding-right:10px}
 <header>
   <div class="entete">
     <div>
-      <h1>Tournoi de pickleball</h1>
-      <p>Double Trouble · disponibilités et matchs</p>
+      <h1>Réservation de terrain</h1>
+      <p>Pickleball · lieux, terrains et joueurs</p>
     </div>
     <div class="haut-droite"><span class="sync local" id="sync">Connexion…</span><button class="verrou" id="btnVerrou" type="button">🔒 Modifier</button></div>
   </div>
 </header>
 
-<div class="page" id="vueTableau">
-  <div class="colonne-gauche">
-    <aside class="aplanifier" id="panneau">
-      <h2>Matchs à planifier</h2>
-      <p class="petit" id="consigne">Glisse un match dans une plage, ou touche-le puis touche une plage.</p>
-      <button class="ajouter" id="btnAjouterMatch" type="button">+ Ajouter un match</button>
-      <div id="listeAPlanifier"></div>
-    </aside>
+<div class="resa" id="vueResa">
+  <div class="resa-grille">
+    <section class="carte">
+      <h3>Nouvelle réservation</h3>
+      <div class="champs">
+        <div class="champ large">
+          <label for="resaDate">Date</label>
+          <input id="resaDate" type="date">
+          <div class="puces jours"><button type="button" data-jour="0">Aujourd'hui</button><button type="button" data-jour="1"></button><button type="button" data-jour="2"></button><button type="button" data-jour="3"></button></div>
+        </div>
+        <div class="champ">
+          <label for="resaHeure">Début</label>
+          <input id="resaHeure" type="time" step="300">
+          <div class="puces"><button type="button" data-heure="12:15">12 h 15</button><button type="button" data-heure="16:30">16 h 30</button></div>
+        </div>
+        <div class="champ">
+          <label for="resaFin">Fin (1 h par défaut, ajustable)</label>
+          <div class="ligne-fin">
+            <input id="resaFin" type="time" step="300">
+            <div class="puces"><button type="button" data-duree="60">1 h</button><button type="button" data-duree="90">1 h 30</button><button type="button" data-duree="120">2 h</button></div>
+          </div>
+        </div>
+        <div class="champ large">
+          <label for="resaLieu">Lieu</label>
+          <select id="resaLieu"></select>
+        </div>
+        <div class="champ large">
+          <label id="resaJoueursTitre">Joueurs</label>
+          <div class="choix-joueurs" id="resaJoueurs"></div>
+          <div class="autre-joueur seul-edition">
+            <input id="resaAutre" type="text" placeholder="Nouveau membre" autocomplete="off" aria-label="Nouveau membre">
+            <button type="button" id="resaAjouterAutre">Ajouter à la liste</button>
+          </div>
+          <button type="button" class="retirer-membres seul-edition" id="resaRetirer" hidden></button>
+        </div>
+        <div class="champ large">
+          <label>Terrains</label>
+          <div class="terrains-resa" id="resaTerrains"></div>
+        </div>
+        <div class="champ large">
+          <label for="resaNote">Note</label>
+          <textarea id="resaNote" rows="2" placeholder="Ex. : apportez des balles"></textarea>
+          <button type="button" class="lien-auto" id="resaNoteAuto" hidden>↺ Remettre le texte automatique</button>
+        </div>
+      </div>
+      <p class="erreur-resa" id="resaErreur" hidden></p>
+      <div class="actions-resa">
+        <button class="principal" id="resaEnregistrer" type="button">Enregistrer la réservation</button>
+        <button id="resaVider" type="button">Recommencer</button>
+      </div>
+    </section>
+    <section class="carte">
+      <h3>Réservations à venir</h3>
+      <p class="indice-copie">📋 Touche une carte pour copier son image.</p>
+      <div id="resaApercuCarte"></div>
+      <div class="liste-resa" id="listeResa"></div>
+    </section>
   </div>
-
-  <main id="principal">
-    <div class="barre">
-      <div class="legende">
-        <span><i class="pas" style="background:var(--dispo)"></i>Disponibles</span>
-        <span><i class="pas" style="background:var(--indispo)"></i>Pas disponibles</span>
-        <span><i class="pas" style="background:var(--surface);border:2px solid var(--rouge)"></i>Match</span>
-      </div>
-      <div class="bascule" role="group" aria-label="Affichage">
-        <button id="vueCompacte" aria-pressed="false">Compact</button>
-        <button id="vueDetail" aria-pressed="false">Détaillé</button>
-      </div>
-    </div>
-
-    <div id="prochainBloc"></div>
-    <div id="semaines"></div>
-
-    <div class="bas">
-      <div>
-        <p class="aide">Pour modifier, touche 🔒 Modifier en haut et entre le NIP (une seule fois par appareil). Touche une plage pour passer de disponibles à pas disponibles. Pour déplacer un match, touche-le puis
-        touche la nouvelle plage. En vue détaillée, ✎ ajoute une note et ✕ remet un match à planifier.</p>
-      </div>
-      <aside class="equipes">
-        <h2>Équipes</h2>
-        <ul id="listeEquipes"></ul>
-      </aside>
-    </div>
-  </main>
-</div>
-
-<div class="placement" id="bandeau" hidden>
-  <span id="bandeauTexte"></span>
-  <button id="btnAnnulerPlacement">Annuler</button>
 </div>
 
 <div class="message" id="message" role="status" hidden></div>
@@ -259,62 +370,19 @@ body.lecture .carte-match{padding-right:10px}
   </div>
 </div>
 
-<div class="voile" id="voileMatch" hidden>
-  <div class="dialogue" role="dialog" aria-modal="true" aria-labelledby="ajoutTitre">
-    <h2 id="ajoutTitre">Ajouter un match</h2>
-    <label for="equipeA">Équipe A</label>
-    <select id="equipeA"></select>
-    <div class="vs">vs</div>
-    <label for="equipeB">Équipe B</label>
-    <select id="equipeB"></select>
-    <p class="erreur" id="ajoutErreur" hidden></p>
-    <div class="boutons">
-      <button id="ajoutAnnuler" type="button">Annuler</button>
-      <button id="ajoutOk" class="ok" type="button">Ajouter</button>
-    </div>
-  </div>
-</div>
-
 <script>
-/* ===================== CONFIGURATION ===================== */
-const NB_SEMAINES = 4, JOURS = 5, NB_TERRAINS = 12;
-const PLAGES = [ { code:"1215", libelle:"12 h 15" }, { code:"1630", libelle:"16 h 30" } ];
-const NOTRE_EQUIPE = "Double Trouble";
-/* Indisponibilités récurrentes : 0 = lundi … 4 = vendredi */
-const INDISPO_RECURRENTES = { 0:["1215","1630"], 1:["1630"], 2:["1630"], 4:["1630"] };
-/* Configuration de départ (utilisée tant que rien n'est sauvegardé) */
-const MATCHS_DEPART = [
-  { id:"fred2",      adversaire:"Fred2",          cle:"2026-11-05|1630", terrain:"" },
-  { id:"arcsmashes", adversaire:"Les ArcSmashes", cle:null, terrain:"" },
-  { id:"aa",         adversaire:"Les AA",         cle:null, terrain:"" },
-  { id:"phoenix",    adversaire:"Les Phoenix",    cle:null, terrain:"" },
-];
-const EQUIPES = [
-  ["Bang-Bang","Louis-Emmanuel Jamet / Steve Vachon"],
-  ["Smash-Bros","David Marceau / Stéphane Dorais"],
-  ["Les Phoenix","Katherine Bédard / Alexandre D’Urzo"],
-  ["Les AA","Ariane Arsenault / Vincent Arsenault"],
-  ["Double Trouble","Marie-Geneviève Latour / Benoît Savard"],
-  ["Fred2","Frédéric Lavigne / Frédérick Gamache"],
-  ["Flying Pickles","Steve Rouillard / Alexandre Dal Pan"],
-  ["Les Giga","Dominique Rhéaume / Pierre-Olivier Roy"],
-  ["Les ArcSmashes","Bernard Lachance / David-Laurance Nadeau"],
-  ["Les Ainés","Martin Guay / Alain Paré"],
-];
-const LIBELLES = { "":"À confirmer", dispo:"Disponibles", nondispo:"Pas disponibles" };
-const CYCLE = ["dispo","nondispo",""];
-const CLE_LOCALE = "pickleball-dt-v4", CLE_VUE = "pickleball-dt-vue";
-const CHEMIN_DOC = "tournoi/double-trouble";
-
 /* ===================== ÉTAT ET STOCKAGE ===================== */
-const depart = () => ({ modifs:{}, matchs: MATCHS_DEPART.map(m => ({...m})) });
+const CLE_LOCALE = "terrains-donnees-v1";
 const clone = o => JSON.parse(JSON.stringify(o));
-function lireLocal(){ try{ const d = JSON.parse(localStorage.getItem(CLE_LOCALE)); if(d && d.modifs && Array.isArray(d.matchs)) return d; }catch(e){} return null; }
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const aujourdhui = new Date(), isoAuj = iso(aujourdhui);
+const depart = () => ({ membres: [...MEMBRES_DEPART], reservations: [] });
+function lireLocal(){ try{ const d = JSON.parse(localStorage.getItem(CLE_LOCALE)); if(d && Array.isArray(d.reservations)) return d; }catch(e){} return null; }
 function ecrireLocal(){ try{ localStorage.setItem(CLE_LOCALE, JSON.stringify(donnees)); }catch(e){} }
-let donnees = lireLocal() || depart();
+let donnees = null;   // rempli au démarrage, une fois les membres de départ connus
 
-const API = "https://script.google.com/macros/s/AKfycbw896x33YN6Wy6lmOTIfhKYAXjU3A0vXsDlg1kHffluWf5oICJYeFC0Mh0yMQembcPt/exec";
-const CLE_NIP = "pickleball-dt-nip";
+const API = "https://script.google.com/macros/s/AKfycby7XnZQ73kpNppjbsX3_bPiGtoFoN9mSObVpfUG7BzsyX_xt0iK7CdWD2hgb71v9A/exec";   // adresse /exec du script Google des réservations
+const CLE_NIP = "terrains-nip";
 let nip = null; try{ nip = localStorage.getItem(CLE_NIP); }catch(e){}
 let modeEdition = !!nip;
 let versionServeur = 0;
@@ -378,17 +446,17 @@ async function rafraichir(){
     const r = await (await fetch(API)).json();
     if(!r.ok) throw 0;
     if(minuterie || envoiEnCours || aRenvoyer) return;          // un changement local est parti entre-temps
-    if(r.version !== versionServeur && r.donnees && Array.isArray(r.donnees.matchs)){
+    if(r.version !== versionServeur && r.donnees && Array.isArray(r.donnees.reservations)){
       versionServeur = r.version; donnees = clone(r.donnees); ecrireLocal(); rendre();
     }
     majSync(modeEdition ? "Synchronisé" : "Synchronisé · lecture seule", !modeEdition);
   }catch(e){ majSync("Hors ligne", true); }
 }
 
-function oublierNip(){ nip = null; modeEdition = false; try{ localStorage.removeItem(CLE_NIP); }catch(e){} annulerSelection(); majVerrou(); rendre(); }
+function oublierNip(){ nip = null; modeEdition = false; try{ localStorage.removeItem(CLE_NIP); }catch(e){} majVerrou(); rendre(); }
 
 async function deverrouiller(){
-  const saisi = await dialogue({ titre:"Entrer le NIP", texte:"Le NIP permet de modifier le tableau sur cet appareil. Il reste mémorisé ici.", champ:"password", ok:"Déverrouiller" });
+  const saisi = await dialogue({ titre:"Entrer le NIP", texte:"Le NIP permet de modifier les réservations et la liste des membres sur cet appareil. Il reste mémorisé ici.", champ:"password", ok:"Déverrouiller" });
   if(saisi === null || !saisi.trim()) return;
   try{
     const r = await appelApi({ action:"verifier", nip: saisi.trim() });
@@ -412,74 +480,6 @@ function brancherSynchro(){
   setInterval(() => { if(document.visibilityState === "visible") rafraichir(); }, 20000);
 }
 
-/* ===================== DATES ===================== */
-function lundiDe(d){ const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - (x.getDay()+6)%7); return x; }
-const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const fmtJour  = new Intl.DateTimeFormat("fr-CA",{ weekday:"long", day:"numeric", month:"short" });
-const fmtCourt = new Intl.DateTimeFormat("fr-CA",{ day:"numeric", month:"long" });
-const fmtLettre= new Intl.DateTimeFormat("fr-CA",{ weekday:"short" });
-const aujourdhui = new Date(), isoAuj = iso(aujourdhui), lundiDepart = lundiDe(aujourdhui);
-function dateDeCle(cle){ const [y,m,j] = cle.split("|")[0].split("-").map(Number); return new Date(y,m-1,j); }
-function libellePlage(code){ return (PLAGES.find(p => p.code === code) || {}).libelle || code; }
-
-/* ===================== LOGIQUE ===================== */
-function etatBase(cle, indexJour, code){
-  if(donnees.modifs[cle]) return donnees.modifs[cle];
-  return { etat: (INDISPO_RECURRENTES[indexJour]||[]).includes(code) ? "nondispo" : "dispo", note:"" };
-}
-/* Équipes d'un match (les anciens matchs n'ont que « adversaire » : équipe A = nous) */
-const equipesDe = m => [m.equipeA || NOTRE_EQUIPE, m.equipeB || m.adversaire];
-const nomMatch = m => { const [a,b] = equipesDe(m); return `${a} vs ${b}`; };
-const nomCourt = m => { const [a,b] = equipesDe(m); return a === NOTRE_EQUIPE ? `vs ${b}` : b === NOTRE_EQUIPE ? `vs ${a}` : `${a} vs ${b}`; };
-const matchA = cle => donnees.matchs.find(m => m.cle === cle);
-const matchParId = id => donnees.matchs.find(m => m.id === id);
-
-let selection = null;   // id du match en cours de placement (mode tactile)
-function choisir(id){
-  if(selection !== id && !exigerEdition()) return;
-  selection = (selection === id) ? null : id;
-  const m = selection && matchParId(selection);
-  document.getElementById("bandeau").hidden = !m;
-  document.body.classList.toggle("cible", !!m);
-  if(m) document.getElementById("bandeauTexte").textContent = `Touche une plage pour placer ${nomMatch(m)}.`;
-  rendre();
-}
-function annulerSelection(){ if(selection) choisir(selection); }
-
-async function placer(id, cle, indexJour, code){
-  if(!exigerEdition()) return;
-  const m = matchParId(id);
-  if(!m) return;
-  if(m.cle === cle){ annulerSelection(); return; }
-  const occupe = matchA(cle);
-  if(occupe){ await dialogue({ titre:"Plage déjà prise", texte:`Il y a déjà un match à cette plage (${nomMatch(occupe)}).`, seulOk:true }); return; }
-  if(etatBase(cle, indexJour, code).etat === "nondispo"){
-    const ok = await dialogue({ titre:"Vous êtes indisponibles", texte:`Placer ${nomMatch(m)} à ${libellePlage(code)} quand même ?`, ok:"Placer" });
-    if(!ok) return;
-  }
-  m.cle = cle;
-  selection = null; document.getElementById("bandeau").hidden = true; document.body.classList.remove("cible");
-  sauver(); rendre();
-}
-function deplanifier(id){
-  if(!exigerEdition()) return;
-  const m = matchParId(id);
-  if(!m || m.cle === null) return;
-  m.cle = null; m.terrain = "";
-  selection = null; document.getElementById("bandeau").hidden = true; document.body.classList.remove("cible");
-  sauver(); rendre();
-}
-function cycler(cle, i, code){
-  if(!exigerEdition()) return;
-  const a = etatBase(cle, i, code);
-  donnees.modifs[cle] = { etat: CYCLE[(CYCLE.indexOf(a.etat)+1) % CYCLE.length], note: a.note };
-  sauver(); rendre();
-}
-function toucherPlage(cle, i, code){
-  if(selection) placer(selection, cle, i, code);
-  else cycler(cle, i, code);
-}
-
 /* ===================== DIALOGUE MAISON ===================== */
 function dialogue({ titre, texte, champ, valeur="", ok="OK", seulOk=false }){
   return new Promise(res => {
@@ -501,211 +501,473 @@ function dialogue({ titre, texte, champ, valeur="", ok="OK", seulOk=false }){
   });
 }
 
-/* ===================== GLISSER-DÉPOSER (souris) ===================== */
-let idGlisse = null;
-function glissable(el, id){
-  el.draggable = true;
-  el.addEventListener("dragstart", e => { if(!modeEdition){ e.preventDefault(); return; } idGlisse = id; e.dataTransfer.effectAllowed = "move"; try{ e.dataTransfer.setData("text/plain", id); }catch(_){} });
-  el.addEventListener("dragend", () => { idGlisse = null; document.querySelectorAll(".survol").forEach(x => x.classList.remove("survol")); });
+/* ===================== RÉSERVATION DE TERRAIN ===================== */
+/* Membres de départ : la vraie liste est enregistrée avec les données partagées (donnees.membres) */
+const MEMBRES_DEPART = ["Ben", "Alex", "Kath", "Mike"];
+/* Lieux et nombre de terrains */
+const LIEUX = [ { nom:"EPS-STADE", terrains:12 }, { nom:"EPS-00141", terrains:3 }, { nom:"EPS-00143", terrains:3 } ];
+const JOUEURS_PAR_TERRAIN = 4;
+const JOURS_AVANCE = 3;   // on peut réserver jusqu'à 3 jours d'avance
+/* Valeurs proposées à l'ouverture (tout reste modifiable) */
+const DEFAUT = { jour: 0, heure: "12:15", lieu: "EPS-STADE", joueurs: ["Ben", "Alex", "Kath"] };   // jour : 0 = aujourd'hui, 1 = demain
+const CLE_LIEU = "terrains-lieu";
+const fmtLong = new Intl.DateTimeFormat("fr-CA",{ weekday:"long", day:"numeric", month:"long" });
+const $ = id => document.getElementById(id);
+const heureLisible = h => { const [hh, mm] = String(h || "").split(":"); return hh ? `${Number(hh)}\u00a0h\u00a0${mm}` : ""; };
+function dateLisible(isoDate){
+  if(!isoDate) return "";
+  const [y,m,j] = isoDate.split("-").map(Number);
+  const t = fmtLong.format(new Date(y, m-1, j));
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
-function cible(el, surDepot){
-  el.addEventListener("dragover", e => { if(!idGlisse) return; e.preventDefault(); el.classList.add("survol"); });
-  el.addEventListener("dragleave", e => { if(!el.contains(e.relatedTarget)) el.classList.remove("survol"); });
-  el.addEventListener("drop", e => { e.preventDefault(); el.classList.remove("survol"); const id = idGlisse || e.dataTransfer.getData("text/plain"); if(id) surDepot(id); });
+const DUREE_DEFAUT = 60;   // minutes
+function ajouterMinutes(h, min){
+  const [hh, mm] = h.split(":").map(Number), t = (hh * 60 + mm + min + 1440) % 1440;
+  return String(Math.floor(t / 60)).padStart(2,"0") + ":" + String(t % 60).padStart(2,"0");
 }
-
-/* ===================== RENDU ===================== */
-let vue = "detail";
-try{ vue = localStorage.getItem(CLE_VUE) || (window.innerWidth < 700 ? "compact" : "detail"); }catch(e){ vue = window.innerWidth < 700 ? "compact" : "detail"; }
-
-function rendrePanneau(){
-  const zone = document.getElementById("listeAPlanifier"); zone.innerHTML = "";
-  const liste = donnees.matchs.filter(m => !m.cle);
-  if(!liste.length){ zone.innerHTML = `<div class="vide">Tous les matchs sont planifiés.</div>`; return; }
-  liste.forEach(m => {
-    const [a,b] = equipesDe(m);
-    const c = document.createElement("div");
-    c.tabIndex = 0; c.setAttribute("role","button");
-    c.className = "carte-match" + (selection === m.id ? " choisi" : "");
-    c.innerHTML = `<b></b><span></span><button class="suppr" type="button" aria-label="Supprimer ce match">✕</button>`;
-    c.querySelector("b").textContent = a;
-    c.querySelector("span").textContent = "vs " + b;
-    c.addEventListener("click", () => choisir(m.id));
-    c.addEventListener("keydown", e => { if((e.key === "Enter" || e.key === " ") && e.target === c){ e.preventDefault(); choisir(m.id); } });
-    c.querySelector(".suppr").addEventListener("click", async e => {
-      e.stopPropagation();
-      if(!exigerEdition()) return;
-      const ok = await dialogue({ titre:"Supprimer ce match ?", texte:nomMatch(m), ok:"Supprimer" });
-      if(!ok) return;
-      donnees.matchs = donnees.matchs.filter(x => x.id !== m.id);
-      if(selection === m.id) annulerSelection();
-      sauver(); rendre();
-    });
-    glissable(c, m.id);
-    zone.appendChild(c);
-  });
+function minutesEntre(a, b){
+  const [ah, am] = a.split(":").map(Number), [bh, bm] = b.split(":").map(Number);
+  return (bh * 60 + bm) - (ah * 60 + am);
 }
-
-function rendreProchain(){
-  const bloc = document.getElementById("prochainBloc"); bloc.innerHTML = "";
-  if(vue !== "compact") return;
-  const avenir = donnees.matchs.filter(m => m.cle && m.cle.split("|")[0] >= isoAuj).sort((a,b) => a.cle.localeCompare(b.cle));
-  if(!avenir.length) return;
-  const m = avenir[0], d = dateDeCle(m.cle);
-  bloc.innerHTML = `<div class="prochain">
-    <div class="date">${fmtLettre.format(d)}<b>${d.getDate()}</b>${new Intl.DateTimeFormat("fr-CA",{month:"short"}).format(d)}</div>
-    <div class="quoi"><b></b><span>Prochain match · ${libellePlage(m.cle.split("|")[1])}</span></div>
-    <span class="pastille-terrain${m.terrain ? "" : " vide"}">${m.terrain ? "Terrain #" + m.terrain : "Terrain ?"}</span></div>`;
-  bloc.querySelector(".quoi b").textContent = nomCourt(m);
+function plageHoraire(h, fin){
+  if(!h) return "";
+  return `${heureLisible(h)} à ${heureLisible(fin || ajouterMinutes(h, DUREE_DEFAUT))}`;
 }
-
-function selectTerrain(match){
-  const sel = document.createElement("select");
-  sel.className = "terrain" + (match.terrain ? " choisi" : "");
-  sel.setAttribute("aria-label","Terrain");
-  sel.add(new Option("Terrain",""));
-  for(let t=1; t<=NB_TERRAINS; t++) sel.add(new Option(`Terrain #${t}`, String(t)));
-  sel.value = match.terrain || "";
-  sel.disabled = !modeEdition;
-  ["click","mousedown","touchstart"].forEach(ev => sel.addEventListener(ev, e => e.stopPropagation(), { passive:true }));
-  sel.addEventListener("change", () => { match.terrain = sel.value; sauver(); rendre(); });
-  return sel;
+let dureeChoisie = DUREE_DEFAUT;   // null = fin ajustée à la main
+function majFinAuto(){
+  const h = $("resaHeure").value, f = $("resaFin").value;
+  if(!dureeChoisie && h && f && minutesEntre(h, f) <= 0) dureeChoisie = DUREE_DEFAUT;   // fin manuelle devenue avant le début : on revient à 1 h
+  if(h && dureeChoisie) $("resaFin").value = ajouterMinutes(h, dureeChoisie);
+  if(!h && dureeChoisie) $("resaFin").value = "";
+}
+const listeFr = a => a.length <= 1 ? (a[0] || "") : a.slice(0, -1).join(", ") + " et " + a[a.length - 1];
+const membres = () => Array.isArray(donnees.membres) ? donnees.membres : MEMBRES_DEPART;
+const lieuChoisi = () => LIEUX.find(l => l.nom === $("resaLieu").value);
+const nbTerrains = () => Math.max(1, Math.ceil(joueursChoisis.length / JOUEURS_PAR_TERRAIN));
+const texteTerrains = r => {
+  const t = (Array.isArray(r.terrains) ? r.terrains : [r.terrain]).filter(Boolean).sort((a, b) => Number(a) - Number(b));
+  return t.length ? (t.length > 1 ? "Terrains #" : "Terrain #") + listeFr(t).replace(/, /g, ", #").replace(/ et /, " et #") : "";
+};
+let joueursChoisis = [], terrainsChoisis = [];
+/* Note automatique selon le nombre de joueurs (tant qu'on ne la modifie pas à la main) */
+let noteAuto = true;
+function texteNoteAuto(n){
+  if(!n) return "";
+  const manque = (JOUEURS_PAR_TERRAIN - n % JOUEURS_PAR_TERRAIN) % JOUEURS_PAR_TERRAIN;
+  if(!manque) return "C'est complet !";
+  return manque === 1
+    ? "Nous sommes à la recherche d'un joueur.\nQuelqu'un de disponible pour se joindre à nous???"
+    : `Nous sommes à la recherche de ${manque} joueurs.\nDes joueurs disponibles pour se joindre à nous???`;
+}
+function majNoteAuto(){
+  if(noteAuto) $("resaNote").value = texteNoteAuto(joueursChoisis.length);
+  $("resaNoteAuto").hidden = noteAuto;
 }
 
-function rendre(){
-  document.body.classList.toggle("lecture", !modeEdition);
-  document.getElementById("principal").classList.toggle("compact", vue === "compact");
-  document.getElementById("vueCompacte").setAttribute("aria-pressed", vue === "compact");
-  document.getElementById("vueDetail").setAttribute("aria-pressed", vue !== "compact");
-  rendrePanneau(); rendreProchain();
-  const conteneur = document.getElementById("semaines"); conteneur.innerHTML = "";
+function erreurResa(t){ const e = $("resaErreur"); e.textContent = t || ""; e.hidden = !t; }
 
-  for(let s=0; s<NB_SEMAINES; s++){
-    const lundi = new Date(lundiDepart); lundi.setDate(lundi.getDate() + s*7);
-    const vendredi = new Date(lundi); vendredi.setDate(lundi.getDate() + JOURS - 1);
-    const bloc = document.createElement("section"); bloc.className = "semaine";
-    bloc.innerHTML = `<h3>Semaine du ${fmtCourt.format(lundi)} au ${fmtCourt.format(vendredi)}</h3>`;
-    const jours = [...Array(JOURS)].map((_,i) => { const d = new Date(lundi); d.setDate(lundi.getDate()+i); return d; });
-
-    if(vue === "compact"){
-      const g = document.createElement("div"); g.className = "mini";
-      g.appendChild(document.createElement("div"));
-      jours.forEach(d => { const t = document.createElement("div"); t.className = "tete"; t.innerHTML = `${fmtLettre.format(d).replace(".","")}<small>${d.getDate()}</small>`; g.appendChild(t); });
-      PLAGES.forEach(p => {
-        const h = document.createElement("div"); h.className = "heure"; h.textContent = p.libelle; g.appendChild(h);
-        jours.forEach((d,i) => {
-          const cle = `${iso(d)}|${p.code}`, m = matchA(cle);
-          const c = document.createElement("button"); c.type = "button";
-          if(m){
-            c.className = "case match" + (selection === m.id ? " choisi" : "");
-            c.textContent = m.terrain ? "T" + m.terrain : "Match";
-            c.title = nomMatch(m);
-            c.addEventListener("click", () => selection && selection !== m.id ? placer(selection, cle, i, p.code) : choisir(m.id));
-          } else {
-            const info = etatBase(cle, i, p.code);
-            c.className = "case " + info.etat;
-            c.setAttribute("aria-label", `${fmtJour.format(d)} ${p.libelle} : ${LIBELLES[info.etat]}`);
-            if(info.note) c.textContent = "•";
-            c.addEventListener("click", () => toucherPlage(cle, i, p.code));
-          }
-          if(iso(d) < isoAuj) c.classList.add("passe");
-          cible(c, id => placer(id, cle, i, p.code));
-          g.appendChild(c);
-        });
-      });
-      bloc.appendChild(g);
-    } else {
-      const grille = document.createElement("div"); grille.className = "grille";
-      jours.forEach((d,i) => {
-        const carte = document.createElement("div");
-        carte.className = "jour" + (iso(d) < isoAuj ? " passe" : "");
-        carte.innerHTML = `<h4>${fmtJour.format(d)}</h4><div class="plages"></div>`;
-        const zone = carte.querySelector(".plages");
-        PLAGES.forEach(p => {
-          const cle = `${iso(d)}|${p.code}`, m = matchA(cle);
-          const b = document.createElement("div");
-          b.tabIndex = 0; b.setAttribute("role","button");
-          if(m){
-            b.className = "bulle match" + (selection === m.id ? " choisi" : "");
-            b.innerHTML = `<button class="coin" type="button" aria-label="Remettre à planifier">✕</button>
-              <div class="heure">${p.libelle}</div><div class="statut">Match</div><div class="note"></div>`;
-            b.querySelector(".note").textContent = nomMatch(m);
-            b.appendChild(selectTerrain(m));
-            b.querySelector(".coin").addEventListener("click", e => { e.stopPropagation(); deplanifier(m.id); });
-            b.addEventListener("click", () => selection && selection !== m.id ? placer(selection, cle, i, p.code) : choisir(m.id));
-            glissable(b, m.id);
-          } else {
-            const info = etatBase(cle, i, p.code);
-            b.className = "bulle " + info.etat;
-            b.innerHTML = `<button class="coin" type="button" aria-label="Ajouter une note">✎</button>
-              <div class="heure">${p.libelle}</div><div class="statut">${LIBELLES[info.etat]}</div>${info.note ? `<div class="note"></div>` : ""}`;
-            if(info.note) b.querySelector(".note").textContent = info.note;
-            b.addEventListener("click", () => toucherPlage(cle, i, p.code));
-            b.querySelector(".coin").addEventListener("click", async e => {
-              e.stopPropagation();
-              if(!exigerEdition()) return;
-              const a = etatBase(cle, i, p.code);
-              const note = await dialogue({ titre:"Note", texte:`${fmtJour.format(d)} à ${p.libelle}`, champ:true, valeur:a.note, ok:"Enregistrer" });
-              if(note === null) return;
-              donnees.modifs[cle] = { etat:a.etat, note:note.trim() };
-              sauver(); rendre();
-            });
-          }
-          b.addEventListener("keydown", e => { if((e.key === "Enter" || e.key === " ") && e.target === b){ e.preventDefault(); b.click(); } });
-          cible(b, id => placer(id, cle, i, p.code));
-          zone.appendChild(b);
-        });
-        grille.appendChild(carte);
-      });
-      bloc.appendChild(grille);
+function rendreTerrains(){
+  const zone = $("resaTerrains"); zone.innerHTML = "";
+  const lieu = lieuChoisi(), n = lieu ? Math.min(nbTerrains(), lieu.terrains) : 1;
+  terrainsChoisis = terrainsChoisis.slice(0, n);
+  for(let i = 0; i < n; i++){
+    const box = document.createElement("label"); box.className = "t";
+    box.innerHTML = `<span>${n > 1 ? "Terrain " + (i + 1) : "Numéro du terrain"}</span>`;
+    const sel = document.createElement("select");
+    sel.add(new Option(lieu ? "À préciser" : "Choisis le lieu", ""));
+    if(lieu) for(let t = 1; t <= lieu.terrains; t++){
+      const pris = terrainsChoisis.some((v, j) => j !== i && v === String(t));
+      const o = new Option("Terrain #" + t + (pris ? " (déjà choisi)" : ""), String(t)); o.disabled = pris; sel.add(o);
     }
-    conteneur.appendChild(bloc);
+    sel.value = terrainsChoisis[i] || "";
+    sel.onchange = () => { terrainsChoisis[i] = sel.value; erreurResa(""); rendreTerrains(); };
+    box.appendChild(sel); zone.appendChild(box);
   }
+  rendreApercu();
 }
 
-function rendreEquipes(){
-  const ul = document.getElementById("listeEquipes");
-  EQUIPES.forEach(([nom, joueurs]) => {
-    const li = document.createElement("li"); if(nom === NOTRE_EQUIPE) li.className = "nous";
-    li.innerHTML = `<b></b> — <span></span>`;
-    li.querySelector("b").textContent = nom; li.querySelector("span").textContent = joueurs;
-    ul.appendChild(li);
+function rendreChoixJoueurs(){
+  const liste = membres();
+  joueursChoisis = joueursChoisis.filter(j => liste.includes(j));
+  const zone = $("resaJoueurs"); zone.innerHTML = "";
+  if(!liste.length) zone.innerHTML = `<div class="vide">La liste est vide. Ajoute un membre ci-dessous.</div>`;
+  liste.forEach(nom => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = nom;
+    b.setAttribute("aria-pressed", String(joueursChoisis.includes(nom)));
+    b.onclick = () => basculerJoueur(nom);
+    zone.appendChild(b);
+  });
+  const n = joueursChoisis.length, t = nbTerrains();
+  $("resaJoueursTitre").textContent = n ? `Joueurs : ${n} choisi${n > 1 ? "s" : ""} · ${t} terrain${t > 1 ? "s" : ""}` : "Joueurs (touche pour choisir)";
+  const btn = $("resaRetirer");
+  btn.hidden = !n;
+  btn.textContent = `Retirer ${listeFr(joueursChoisis)} de la liste`;
+  majNoteAuto();
+  rendreTerrains();
+}
+
+function basculerJoueur(nom){
+  erreurResa("");
+  const lieu = lieuChoisi();
+  if(joueursChoisis.includes(nom)) joueursChoisis = joueursChoisis.filter(j => j !== nom);
+  else if(lieu && joueursChoisis.length >= lieu.terrains * JOUEURS_PAR_TERRAIN){ erreurResa(`${lieu.nom} n'a que ${lieu.terrains} terrains.`); return; }
+  else joueursChoisis.push(nom);
+  rendreChoixJoueurs();
+}
+
+function ajouterMembre(){
+  const nom = $("resaAutre").value.trim().replace(/\s+/g, " ");
+  if(!nom) return;
+  if(!exigerEdition()) return;
+  const liste = [...membres()];
+  if(liste.some(m => m.toLowerCase() === nom.toLowerCase())){ erreurResa(`${nom} est déjà dans la liste.`); return; }
+  liste.push(nom);
+  donnees.membres = liste;
+  $("resaAutre").value = "";
+  sauver(); rendre();
+  message(`${nom} a été ajouté à la liste.`);
+}
+
+async function retirerMembres(){
+  if(!joueursChoisis.length || !exigerEdition()) return;
+  const qui = listeFr(joueursChoisis);
+  const ok = await dialogue({ titre:"Retirer de la liste pour de bon ?", texte:`${qui} ne sera plus proposé${joueursChoisis.length > 1 ? "s" : ""}. Les réservations déjà enregistrées ne changent pas.`, ok:"Retirer" });
+  if(!ok) return;
+  donnees.membres = membres().filter(m => !joueursChoisis.includes(m));
+  joueursChoisis = [];
+  sauver(); rendre();
+  message(`${qui} : retiré${qui.includes(" et ") ? "s" : ""} de la liste.`);
+}
+
+function lireFormulaire(){
+  const terrains = terrainsChoisis.filter(Boolean);
+  return { date: $("resaDate").value, heure: $("resaHeure").value, fin: $("resaFin").value, lieu: $("resaLieu").value,
+           terrains, terrain: terrains[0] || "", joueurs: [...joueursChoisis], note: $("resaNote").value.trim() };
+}
+function viderFormulaire(){
+  ["resaNote","resaAutre"].forEach(id => { $(id).value = ""; });
+  noteAuto = true;
+  const d = new Date(); d.setDate(d.getDate() + DEFAUT.jour);
+  $("resaDate").value = iso(d);
+  $("resaHeure").value = DEFAUT.heure;
+  dureeChoisie = DUREE_DEFAUT; majFinAuto();
+  let lieu = ""; try{ lieu = localStorage.getItem(CLE_LIEU) || ""; }catch(e){}
+  $("resaLieu").value = LIEUX.some(l => l.nom === lieu) ? lieu : (LIEUX.some(l => l.nom === DEFAUT.lieu) ? DEFAUT.lieu : "");
+  joueursChoisis = DEFAUT.joueurs.filter(j => membres().includes(j)); terrainsChoisis = [];
+  rendreChoixJoueurs(); erreurResa("");
+}
+function valider(r){
+  if(!r.date) return "Choisis une date.";
+  { const max = new Date(); max.setDate(max.getDate() + JOURS_AVANCE);
+    if(r.date < isoAuj) return "Cette date est déjà passée.";
+    if(r.date > iso(max)) return `On ne peut réserver que ${JOURS_AVANCE} jours d'avance.`; }
+  if(!r.heure) return "Choisis l'heure de début.";
+  if(r.fin && minutesEntre(r.heure, r.fin) <= 0) return "L'heure de fin doit être après le début.";
+  if(!r.lieu) return "Choisis un lieu.";
+  if(!r.joueurs.length) return "Choisis au moins un joueur.";
+  return "";
+}
+
+function carteResa(r){
+  const el = document.createElement("article"); el.className = "item-resa";
+  const n = (r.joueurs || []).length;
+  el.innerHTML = `<div class="cm-bandeau"><span class="cm-titre">Match de Pickleball</span><span class="cm-icone">${iconeSVG()}</span></div>
+    <div class="cm-corps"><div class="cm-date"></div><div class="cm-heure"></div>
+    <div class="cm-lieu"><i></i><span></span></div>
+    <div class="cm-label"></div><div class="cm-joueurs"></div>${r.note ? '<div class="cm-note"></div>' : ""}</div>`;
+  const date = el.querySelector(".cm-date"), heure = el.querySelector(".cm-heure");
+  date.textContent = dateLisible(r.date) || "Date à choisir"; date.classList.toggle("cm-vide", !r.date);
+  heure.textContent = plageHoraire(r.heure, r.fin) || "Heure à choisir"; heure.classList.toggle("cm-vide", !r.heure);
+  el.querySelector(".cm-lieu span").textContent = [r.lieu, texteTerrains(r)].filter(Boolean).join("  ·  ") || "Lieu à choisir";
+  el.querySelector(".cm-label").textContent = `${n > 1 ? "JOUEURS CONFIRMÉS" : "JOUEUR CONFIRMÉ"} (${n})`;
+  const zj = el.querySelector(".cm-joueurs"); (r.joueurs || []).forEach(j => { const sp = document.createElement("span"); sp.textContent = j; zj.appendChild(sp); });
+  if(r.note) el.querySelector(".cm-note").textContent = r.note;
+  el.classList.add("cliquable");
+  el.tabIndex = 0; el.setAttribute("role", "button");
+  el.setAttribute("aria-label", "Copier l'image de cette réservation");
+  el.title = "Copier l'image";
+  el.addEventListener("click", () => copierImage(r));
+  el.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); copierImage(r); } });
+  return el;
+}
+
+/* ===================== ICÔNE PICKLEBALL ===================== */
+/* Pagaie « aux couleurs UL » + balle trouée, en coordonnées 0-100.
+   Chaque forme sert à la fois au SVG de la page et au dessin de l'image copiée. */
+const rr = (x, y, w, h, r) => `M${x+r} ${y}H${x+w-r}A${r} ${r} 0 0 1 ${x+w} ${y+r}V${y+h-r}A${r} ${r} 0 0 1 ${x+w-r} ${y+h}H${x+r}A${r} ${r} 0 0 1 ${x} ${y+h-r}V${y+r}A${r} ${r} 0 0 1 ${x+r} ${y}Z`;
+const rond = (cx, cy, r) => `M${cx-r} ${cy}a${r} ${r} 0 1 0 ${2*r} 0a${r} ${r} 0 1 0 ${-2*r} 0Z`;
+const ICONE = (() => {
+  const P = [];   // tourne : true = fait partie de la pagaie inclinée
+  P.push({ d:"M45 58L55 58L54.5 66L45.5 66Z", fill:"#1E1B19", tourne:true });                       // gorge
+  P.push({ d:rr(45, 63, 10, 28, 3), fill:"#1E1B19", tourne:true });                                 // manche
+  P.push({ d:[0,1,2,3,4].map(i => `M45 ${67+i*5}L55 ${64+i*5}`).join(""), stroke:"#4A4542", sw:1.6, tourne:true }); // grip
+  P.push({ d:rr(43, 88, 14, 7, 3.5), fill:"#FFFFFF", tourne:true });                                // embout
+  P.push({ d:"M45 4H55A16 16 0 0 1 71 20V50A11 11 0 0 1 60 61H40A11 11 0 0 1 29 50V20A16 16 0 0 1 45 4Z", fill:"#FFC103", stroke:"#FFFFFF", sw:4.5, tourne:true }); // face
+  P.push({ d:"M47 10H53A11 11 0 0 1 64 21V48A7 7 0 0 1 57 55H43A7 7 0 0 1 36 48V21A11 11 0 0 1 47 10Z", fill:"#FFD54A", tourne:true }); // panneau
+  P.push({ d:rr(31.5, 42, 37, 6, 0), fill:"#A6000E", tourne:true });                                 // bande rouge
+  P.push({ d:"M2 36l8 -4M4 44l7 -4", stroke:"#FFFFFF", sw:2.5, cap:"round", opacite:.8 });            // traits de vitesse
+  P.push({ d:rond(19, 24, 13), fill:"#DFF03A", stroke:"#1E1B19", sw:1.3 });                          // balle
+  [[0,0],[0,-.55],[.48,-.28],[.48,.28],[0,.55],[-.48,.28],[-.48,-.28]].forEach(([x, y]) =>
+    P.push({ d:rond(19 + x*13, 24 + y*13, 1.7), fill:"#7E8700" }));                                  // trous
+  return { formes:P, rotation:30, centre:[50, 50] };
+})();
+function iconeSVG(){
+  const forme = f => `<path d="${f.d}" fill="${f.fill || "none"}"${f.stroke ? ` stroke="${f.stroke}" stroke-width="${f.sw}"` : ""}${f.cap ? ` stroke-linecap="${f.cap}"` : ""}${f.opacite ? ` opacity="${f.opacite}"` : ""}/>`;
+  const [cx, cy] = ICONE.centre;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(${ICONE.rotation} ${cx} ${cy})">${ICONE.formes.filter(f => f.tourne).map(forme).join("")}</g>${ICONE.formes.filter(f => !f.tourne).map(forme).join("")}</svg>`;
+}
+function dessinerIcone(ctx, x, y, taille){
+  const k = taille / 100, [cx, cy] = ICONE.centre;
+  const peindre = f => {
+    const p = new Path2D(f.d);
+    ctx.globalAlpha = f.opacite || 1;
+    if(f.fill){ ctx.fillStyle = f.fill; ctx.fill(p); }
+    if(f.stroke){ ctx.strokeStyle = f.stroke; ctx.lineWidth = f.sw; ctx.lineCap = f.cap || "butt"; ctx.stroke(p); }
+    ctx.globalAlpha = 1;
+  };
+  ctx.save(); ctx.translate(x, y); ctx.scale(k, k);
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(ICONE.rotation * Math.PI / 180); ctx.translate(-cx, -cy);
+  ICONE.formes.filter(f => f.tourne).forEach(peindre);
+  ctx.restore();
+  ICONE.formes.filter(f => !f.tourne).forEach(peindre);
+  ctx.restore();
+}
+
+/* ===================== IMAGE DE LA RÉSERVATION ===================== */
+async function chargerPolices(){
+  try{
+    await Promise.all([
+      document.fonts.load('700 56px "Barlow Condensed"'), document.fonts.load('600 40px "Barlow Condensed"'),
+      document.fonts.load('700 30px "Source Sans 3"'), document.fonts.load('600 30px "Source Sans 3"'),
+      document.fonts.load('italic 400 26px "Source Sans 3"')
+    ]);
+  }catch(e){}
+}
+function decouperLignes(ctx, texte, largeur){
+  const lignes = [];
+  String(texte || "").split("\n").forEach(par => {
+    let ligne = "";
+    par.split(" ").forEach(mot => {
+      const essai = ligne ? ligne + " " + mot : mot;
+      if(ctx.measureText(essai).width > largeur && ligne){ lignes.push(ligne); ligne = mot; }
+      else ligne = essai;
+    });
+    lignes.push(ligne);
+  });
+  return lignes;
+}
+function rectArrondi(ctx, x, y, w, h, r){
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+/* Dessine la carte ; si ctx est null, calcule seulement la hauteur */
+function dessinerResa(ctx, mesure, r, W){
+  const PAD = 48, F_T = '"Barlow Condensed","Arial Narrow",Arial,sans-serif', F_X = '"Source Sans 3","Segoe UI",Arial,sans-serif';
+  const C = { rouge:"#E30513", fonce:"#A6000E", or:"#FFC103", orFonce:"#C99400", orPale:"#FFF4CC", texte:"#1E1B19", texte2:"#5E5853", gris:"#F7F5F2" };
+  const d = ctx || mesure;
+  let y = 0;
+  // Bandeau
+  if(ctx){
+    ctx.fillStyle = C.rouge; ctx.fillRect(0, 0, W, 118);
+    ctx.fillStyle = C.or; ctx.fillRect(0, 118, W, 10);
+    ctx.fillStyle = "#fff"; ctx.font = `700 58px ${F_T}`; ctx.textBaseline = "alphabetic";
+    ctx.fillText("Match de Pickleball", PAD, 80);
+    dessinerIcone(ctx, W - PAD - 104, 8, 104);
+  }
+  y = 128 + 64;
+  // Date et heure
+  d.font = `700 50px ${F_T}`;
+  if(ctx){ ctx.fillStyle = C.texte; ctx.fillText(dateLisible(r.date) || "Date à choisir", PAD, y); }
+  y += 50;
+  d.font = `600 42px ${F_T}`;
+  if(ctx){ ctx.fillStyle = C.fonce; ctx.fillText((plageHoraire(r.heure, r.fin) || "Heure à choisir").replace(/\u00a0/g, " "), PAD, y); }
+  y += 30;
+  // Lieu et terrains
+  const lieu = [r.lieu, texteTerrains(r)].filter(Boolean).join("  ·  ") || "Lieu à choisir";
+  d.font = `700 30px ${F_X}`;
+  const lw = d.measureText(lieu).width + 64;
+  if(ctx){
+    rectArrondi(ctx, PAD, y, lw, 56, 28); ctx.fillStyle = C.gris; ctx.fill();
+    ctx.fillStyle = C.rouge; ctx.beginPath(); ctx.arc(PAD + 28, y + 28, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.texte; ctx.fillText(lieu, PAD + 46, y + 38);
+  }
+  y += 56 + 40;
+  // Joueurs
+  const joueurs = r.joueurs || [];
+  d.font = `700 22px ${F_X}`;
+  if(ctx){ ctx.fillStyle = C.texte2; ctx.fillText(`${joueurs.length > 1 ? "JOUEURS CONFIRMÉS" : "JOUEUR CONFIRMÉ"} (${joueurs.length})`, PAD, y); }
+  y += 18;
+  d.font = `600 30px ${F_X}`;
+  let x = PAD; const hP = 54, gap = 12;
+  joueurs.forEach(j => {
+    const w = d.measureText(j).width + 44;
+    if(x + w > W - PAD && x > PAD){ x = PAD; y += hP + gap; }
+    if(ctx){
+      rectArrondi(ctx, x, y, w, hP, 27); ctx.fillStyle = C.orPale; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = C.orFonce; ctx.stroke();
+      ctx.fillStyle = C.texte; ctx.fillText(j, x + 22, y + 37);
+    }
+    x += w + gap;
+  });
+  y += (joueurs.length ? hP : 0) + 36;
+  // Note
+  if(r.note){
+    d.font = `italic 400 28px ${F_X}`;
+    const lignes = decouperLignes(d, r.note, W - 2 * PAD - 48), hL = 38, hB = lignes.length * hL + 36;
+    if(ctx){
+      rectArrondi(ctx, PAD, y, W - 2 * PAD, hB, 14); ctx.fillStyle = C.gris; ctx.fill();
+      ctx.fillStyle = C.rouge; ctx.fillRect(PAD, y, 6, hB);
+      ctx.fillStyle = C.texte2; lignes.forEach((l, i) => ctx.fillText(l, PAD + 30, y + 44 + i * hL));
+    }
+    y += hB + 36;
+  }
+  return y + 12;
+}
+async function imageResa(r){
+  await chargerPolices();
+  const W = 900, ECH = 2;
+  const mesure = document.createElement("canvas").getContext("2d");
+  const H = dessinerResa(null, mesure, r, W);
+  const cv = document.createElement("canvas"); cv.width = W * ECH; cv.height = H * ECH;
+  const ctx = cv.getContext("2d"); ctx.scale(ECH, ECH);
+  ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, W, H);
+  dessinerResa(ctx, null, r, W);
+  ctx.fillStyle = "#FFC103"; ctx.fillRect(0, H - 8, W, 8);
+  return new Promise(res => cv.toBlob(res, "image/png"));
+}
+async function copierImage(r){
+  const promesse = imageResa(r);
+  try{
+    if(!navigator.clipboard || !window.ClipboardItem) throw new Error("non pris en charge");
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": promesse })]);
+    message("Image copiée ! Colle-la dans ta conversation.");
+    return;
+  }catch(e){}
+  const blob = await promesse;
+  const fichier = new File([blob], `pickleball-${r.date || "match"}.png`, { type: "image/png" });
+  try{
+    if(navigator.canShare && navigator.canShare({ files: [fichier] })){ await navigator.share({ files: [fichier] }); return; }
+  }catch(e){ if(e && e.name === "AbortError") return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fichier.name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  message("L'image a été téléchargée.");
+}
+
+function rendreApercu(){
+  const zone = $("resaApercuCarte"); if(!zone) return;
+  zone.innerHTML = "";
+  const r = lireFormulaire();
+  majPucesDate();
+  if(!(r.date || r.heure || r.lieu || r.joueurs.length || r.note)) return;
+  const cadre = document.createElement("div"); cadre.className = "apercu-cadre";
+  cadre.innerHTML = '<span class="etiquette-apercu">Aperçu · pas encore enregistrée</span>';
+  cadre.appendChild(carteResa(r));
+  zone.appendChild(cadre);
+}
+const fmtJourLong = new Intl.DateTimeFormat("fr-CA",{ weekday:"long" });
+const fmtJourCourt = new Intl.DateTimeFormat("fr-CA",{ weekday:"short" });
+const majuscule = t => t.charAt(0).toUpperCase() + t.slice(1);
+function majPucesDate(){
+  const v = $("resaDate").value, h = $("resaHeure").value;
+  const auj = new Date(), max = new Date(); max.setDate(max.getDate() + JOURS_AVANCE);
+  $("resaDate").min = iso(auj); $("resaDate").max = iso(max);
+  document.querySelectorAll("[data-jour]").forEach(b => {
+    const n = Number(b.dataset.jour), d = new Date(); d.setDate(d.getDate() + n);
+    if(n > 0){
+      const long = `${majuscule(fmtJourLong.format(d))} ${d.getDate()}`;
+      const court = `${majuscule(fmtJourCourt.format(d)).replace(/\.$/, "")} ${d.getDate()}`;
+      b.innerHTML = `<span class="long">${long}</span><span class="court">${court}</span>`;
+    } else b.innerHTML = `<span class="long">Aujourd'hui</span><span class="court">Auj.</span>`;
+    b.setAttribute("aria-pressed", String(v === iso(d)));
+  });
+  document.querySelectorAll("[data-heure]").forEach(b => b.setAttribute("aria-pressed", String(h === b.dataset.heure)));
+  const f = $("resaFin").value;
+  document.querySelectorAll("[data-duree]").forEach(b => b.setAttribute("aria-pressed", String(!!(h && f) && minutesEntre(h, f) === Number(b.dataset.duree))));
+}
+
+function rendreResa(){
+  rendreChoixJoueurs();
+  const zone = $("listeResa"); zone.innerHTML = "";
+  const avenir = (donnees.reservations || []).filter(r => r.date >= isoAuj).sort((a,b) => (a.date + a.heure).localeCompare(b.date + b.heure));
+  if(!avenir.length){ zone.innerHTML = `<div class="vide">Aucune réservation enregistrée à venir.</div>`; return; }
+  avenir.forEach(r => {
+    const ligne = document.createElement("div"); ligne.className = "ligne-resa";
+    const el = carteResa(r);
+    const suppr = document.createElement("button");
+    suppr.type = "button"; suppr.className = "suppr-resa seul-edition";
+    suppr.setAttribute("aria-label", "Supprimer cette réservation"); suppr.title = "Supprimer cette réservation";
+    suppr.innerHTML = `<span aria-hidden="true">🗑</span><span class="txt">Supprimer</span>`;
+    ligne.append(el, suppr);
+    suppr.onclick = async () => {
+      if(!exigerEdition()) return;
+      const ok = await dialogue({ titre:"Supprimer cette réservation ?", texte:`${dateLisible(r.date)}, ${plageHoraire(r.heure, r.fin)}`, ok:"Supprimer" });
+      if(!ok) return;
+      donnees.reservations = (donnees.reservations || []).filter(x => x.id !== r.id);
+      sauver(); rendre();
+    };
+    zone.appendChild(ligne);
   });
 }
 
-/* ===================== AJOUT D'UN MATCH ===================== */
 (function(){
-  const selA = document.getElementById("equipeA"), selB = document.getElementById("equipeB");
-  const voile = document.getElementById("voileMatch"), err = document.getElementById("ajoutErreur");
-  [selA, selB].forEach(s => EQUIPES.forEach(([nom]) => s.add(new Option(nom, nom))));
-  const effacer = () => { err.hidden = true; };
-  selA.onchange = selB.onchange = effacer;
-  document.getElementById("btnAjouterMatch").onclick = () => {
+  $("resaLieu").add(new Option("Choisis un lieu", ""));
+  LIEUX.forEach(l => $("resaLieu").add(new Option(`${l.nom} (${l.terrains} terrains)`, l.nom)));
+  $("resaLieu").addEventListener("change", () => {
+    const lieu = lieuChoisi();
+    if(lieu && joueursChoisis.length > lieu.terrains * JOUEURS_PAR_TERRAIN)
+      erreurResa(`${lieu.nom} n'a que ${lieu.terrains} terrains : retire des joueurs.`);
+    else erreurResa("");
+    terrainsChoisis = terrainsChoisis.filter(t => !lieu || Number(t) <= lieu.terrains);
+    rendreTerrains();
+  });
+  $("resaDate").addEventListener("input", () => { erreurResa(""); rendreApercu(); });
+  $("resaNote").addEventListener("input", () => {
+    noteAuto = $("resaNote").value === texteNoteAuto(joueursChoisis.length);
+    $("resaNoteAuto").hidden = noteAuto;
+    erreurResa(""); rendreApercu();
+  });
+  $("resaNoteAuto").onclick = () => { noteAuto = true; majNoteAuto(); rendreApercu(); };
+  ["input","change"].forEach(ev => $("resaHeure").addEventListener(ev, () => { majFinAuto(); erreurResa(""); rendreApercu(); }));
+  ["input","change"].forEach(ev => $("resaFin").addEventListener(ev, () => { dureeChoisie = null; erreurResa(""); rendreApercu(); }));
+  document.querySelectorAll("[data-duree]").forEach(b => b.onclick = () => {
+    dureeChoisie = Number(b.dataset.duree);
+    if(!$("resaHeure").value){ erreurResa("Choisis d'abord l'heure de début."); return; }
+    majFinAuto(); erreurResa(""); rendreApercu();
+  });
+  $("resaDate").addEventListener("change", rendreApercu);
+  document.querySelectorAll("[data-heure]").forEach(b => b.onclick = () => { $("resaHeure").value = b.dataset.heure; majFinAuto(); erreurResa(""); rendreApercu(); });
+  document.querySelectorAll("[data-jour]").forEach(b => b.onclick = () => {
+    const d = new Date(); d.setDate(d.getDate() + Number(b.dataset.jour));
+    $("resaDate").value = iso(d); erreurResa(""); rendreApercu();
+  });
+  $("resaAjouterAutre").onclick = ajouterMembre;
+  $("resaAutre").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); ajouterMembre(); } });
+  $("resaRetirer").onclick = retirerMembres;
+  $("resaVider").onclick = viderFormulaire;
+  $("resaEnregistrer").onclick = () => {
+    const r = lireFormulaire(), err = valider(r);
+    if(err){ erreurResa(err); return; }
+    const lieu = lieuChoisi();
+    if(lieu && r.joueurs.length > lieu.terrains * JOUEURS_PAR_TERRAIN){ erreurResa(`${lieu.nom} n'a que ${lieu.terrains} terrains : retire des joueurs.`); return; }
     if(!exigerEdition()) return;
-    selA.value = NOTRE_EQUIPE;
-    selB.value = EQUIPES.find(([n]) => n !== NOTRE_EQUIPE)[0];
-    effacer(); voile.hidden = false; selB.focus();
-  };
-  document.getElementById("ajoutAnnuler").onclick = () => { voile.hidden = true; };
-  document.getElementById("ajoutOk").onclick = () => {
-    const a = selA.value, b = selB.value;
-    if(a === b){ err.textContent = "Choisis deux équipes différentes."; err.hidden = false; return; }
-    donnees.matchs.push({ id:"m" + Date.now().toString(36), equipeA:a, equipeB:b, adversaire:b, cle:null, terrain:"" });
-    voile.hidden = true;
+    if(!Array.isArray(donnees.reservations)) donnees.reservations = [];
+    const limite = new Date(); limite.setDate(limite.getDate() - 30);
+    donnees.reservations = donnees.reservations.filter(x => x.date >= iso(limite));   // on garde 30 jours d'historique
+    donnees.reservations.push({ id: "r" + Date.now().toString(36), ...r });
+    try{ localStorage.setItem(CLE_LIEU, r.lieu); }catch(e){}
     sauver(); rendre();
+    message("Réservation enregistrée.");
+    viderFormulaire();
   };
-  voile.addEventListener("keydown", e => { if(e.key === "Escape") voile.hidden = true; });
 })();
 
-/* ===================== BOUTONS ===================== */
-cible(document.getElementById("panneau"), deplanifier);
-document.getElementById("btnAnnulerPlacement").onclick = annulerSelection;
-function changerVue(v){ vue = v; try{ localStorage.setItem(CLE_VUE, v); }catch(e){} rendre(); }
-document.getElementById("vueCompacte").onclick = () => changerVue("compact");
-document.getElementById("vueDetail").onclick = () => changerVue("detail");
-document.addEventListener("keydown", e => { if(e.key === "Escape" && document.getElementById("voile").hidden) annulerSelection(); });
-
-rendreEquipes();
+/* ===================== DÉMARRAGE ===================== */
+donnees = lireLocal() || depart();
+viderFormulaire();
+function rendre(){
+  document.body.classList.toggle("lecture", !modeEdition);
+  rendreResa();
+}
 rendre();
 brancherSynchro();
 </script>
